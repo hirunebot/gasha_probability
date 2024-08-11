@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        bundle: './app/pageg.tsx'
+        bundle: './/pageg.tsx'
     },
     output: {
         path: path.join(__dirname, 'dist'),
