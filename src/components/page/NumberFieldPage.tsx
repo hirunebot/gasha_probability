@@ -1,8 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { NumberField } from "../NumberField";
-import { Box } from "@mui/material";
-import { CalculationResult } from "../Result";
+import { Box, Stack } from "@mui/material";
+import { CalculationResult } from "../CalculationResult";
 
 export interface NumberFieldPagePresenterProps {
     children: React.ReactNode;
@@ -10,7 +10,7 @@ export interface NumberFieldPagePresenterProps {
 
 export const NumberFieldPagePresenter = (props: NumberFieldPagePresenterProps) => {
     return (
-        <div>
+        <div className="w-[744px] my-0 mx-auto">
             {props.children}
         </div>
     );
@@ -20,12 +20,12 @@ export const NumberFieldPage = () => {
     const [stones, setStones] = useState(0)
     const [stoneForSummon, setStoneForSummon] = useState(0)
     const [summonRate, setSummonRate] = useState(0)
-    const [desiredNum, setDesiredNum] = useState(0)
+    const [desiredNum, setDesiredNum] = useState(1)
 
     return (
-        <main>
-            <h1 className="px-4 py-5 bg-zinc-300 font-bold">ガシャ確率計算機</h1>
-            <div className="px-4 py-5">test</div>
+        <NumberFieldPagePresenter>
+            <h1 className="px-4 py-5 bg-zinc-300 font-bold border-b-2 border-black">ガシャ確率計算機</h1>
+            <div className="px-4 py-5"></div>
             <Box
                 component="form"
                 sx={{
@@ -36,23 +36,25 @@ export const NumberFieldPage = () => {
                     gap: 2,
                 }}
             >
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Stack spacing={1}>
                     <div>所持石</div>
                     <NumberField id="stones" unit="個" func={setStones} />
                     <div>目玉の排出率</div>
                     <NumberField id="summonRate" unit="%" func={setSummonRate} />
-                </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                </Stack>
+                <Stack spacing={1}>
                     <div>ガシャ1回に必要な石</div>
                     <NumberField id="stonesForSummon" unit="個" func={setStoneForSummon} />
                     <div>希望個数</div>
                     <NumberField id="desiredNum" unit="個" func={setDesiredNum} />
-                </Box>
+                </Stack>
             </Box>
-            <div className="px-4">
-                <button>計算</button>
-            </div>
-            <CalculationResult stones={stones} stoneForSummon={stoneForSummon} desiredNum={desiredNum} summonRate={summonRate} />
-    </main>
+            <CalculationResult 
+                stones={stones} 
+                stoneForSummon={stoneForSummon} 
+                desiredNum={desiredNum} 
+                summonRate={summonRate} 
+            />
+        </NumberFieldPagePresenter>
     );
 }
