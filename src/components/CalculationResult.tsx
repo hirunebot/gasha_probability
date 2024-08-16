@@ -19,6 +19,9 @@ export interface CalculationResultProps {
     stoneForSummon: number;
     desiredNum: number;
     summonRate: number;
+    isPityConsidered: boolean;
+    pityItemsFromSummon: number;
+    requiredPityItems: number;
 }
 
 export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
@@ -26,10 +29,21 @@ export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
     if (props.stones > 0 && props.stoneForSummon > 0) {
         summonable = Math.trunc(props.stones / props.stoneForSummon)
     }
+    let pityItems: number = 0
+    let hitsFromPity: number = 0
+    let desiredNum: number = props.desiredNum
+    if (props.isPityConsidered && props.requiredPityItems > 0) {
+        pityItems = props.pityItemsFromSummon * summonable
+        hitsFromPity = Math.trunc(pityItems / props.requiredPityItems)
+        desiredNum = props.desiredNum - hitsFromPity
+        if (desiredNum < 0) {
+            desiredNum = 0
+        }
+    }
 
     const math = require('mathjs')
     const n = summonable
-    const k = props.desiredNum
+    const k = desiredNum
     const p = props.summonRate / 100
     let probJustN = 0
     if (n >= k) {
@@ -57,23 +71,33 @@ export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
             >
                 <Stack spacing={2}>
                     <div>回せる回数･･･</div>
-                    
-                    {props.desiredNum == 0 ? (
-                        <div>1回も出ない確率･･･</div>
+                    {props.isPityConsidered && 
+                        <div>
+                            <div className="pb-4">天井アイテム数･･･</div>
+                            <div>交換できる数･･･</div>
+                        </div>
+                        }
+                    {desiredNum == 0 ? (
+                        <div>
+                            <div className="mb-4">{desiredNum}個以上出る確率･･･</div>
+                            <div>1回も出ない確率･･･</div>
+                        </div>
                     ) : (
                         <div>
-                            <div className="mb-4">{props.desiredNum}個以上出る確率･･･</div>
-                            <div>ちょうど{props.desiredNum}個出る確率･･･</div>
+                            <div className="mb-4">{desiredNum}個以上出る確率･･･</div>
+                            <div>ちょうど{desiredNum}個出る確率･･･</div>
                         </div>
                     )}
                 </Stack>
                 <Stack>
                     <div className="font-bold text-4xl">{summonable}回</div>
-                    {props.desiredNum == 0 ? (
-                        null
-                    ) : (
-                        <div className="font-bold text-4xl">{probAtLeastN.toFixed(2)}%</div>
-                    )}
+                    {props.isPityConsidered && 
+                        <div>
+                            <div className="font-bold text-4xl">{pityItems}個</div>
+                            <div className="font-bold text-4xl">{hitsFromPity}個</div>
+                        </div>
+                    }
+                    <div className="font-bold text-4xl">{probAtLeastN.toFixed(2)}%</div>
                     <div className="font-bold text-4xl">{probJustN.toFixed(2)}%</div>
                 </Stack>
             </Box>
