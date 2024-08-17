@@ -119,6 +119,7 @@ export const NumberFieldPage = () => {
                 isPityConsidered={isPityConsidered}
                 pityItemsFromSummon={pityItemsFromSummon}
                 requiredPityItems={requiredPityItems}
+                calculationMode={calculationMode}
                 summons={summons}
             />
         </NumberFieldPagePresenter>

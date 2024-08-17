@@ -1,6 +1,5 @@
 import { Box, Stack } from '@mui/material';
 import React from 'react';
-import { useState } from "react";
 
 export interface CalculationResultPresenterProps {
     children: React.ReactNode;
@@ -22,6 +21,7 @@ export interface CalculationResultProps {
     isPityConsidered: boolean;
     pityItemsFromSummon: number;
     requiredPityItems: number;
+    calculationMode: string;
     summons: number;
 }
 
@@ -75,7 +75,7 @@ export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
                 }}
             >
                 <Stack spacing={2}>
-                    <div>回せる回数･･･</div>
+                    {props.calculationMode === "stoneBase" && <div>回せる回数･･･</div>}
                     {props.isPityConsidered && 
                         <div>
                             <div className="pb-4">天井アイテム数･･･</div>
@@ -95,7 +95,9 @@ export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
                     )}
                 </Stack>
                 <Stack>
-                    <div className="font-bold text-4xl">{summonable}回</div>
+                    {props.calculationMode === "stoneBase" && 
+                        <div className="font-bold text-4xl">{summonable}回</div>
+                    }
                     {props.isPityConsidered && 
                         <div>
                             <div className="font-bold text-4xl">{pityItems}個</div>
