@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { NumberField } from "../NumberField";
-import { Box, Checkbox, FormControlLabel, FormGroup, Stack } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, FormGroup, MenuItem, Select, SelectChangeEvent, Stack } from "@mui/material";
 import { CalculationResult } from "../CalculationResult";
 
 export interface NumberFieldPagePresenterProps {
@@ -24,6 +24,8 @@ export const NumberFieldPage = () => {
     const [isPityConsidered, setIsPityConsidered] = useState(false)
     const [pityItemsFromSummon, setPityItemsFromSummon] = useState(0)
     const [requiredPityItems, setRequiredPityItems] = useState(0)
+    const [calculationMode, setCalculationMode] = useState("stoneBase")
+    const [summons, setSummons] = useState(0)
 
     const considerPity = () => {
         if (isPityConsidered == false) {
@@ -34,6 +36,12 @@ export const NumberFieldPage = () => {
             setRequiredPityItems(0)
         }
     }
+    const changeMode = (event: SelectChangeEvent) => {
+        setStones(0);
+        setStoneForSummon(0);
+        setSummons(0);
+        setCalculationMode(event.target.value as string);
+    }
 
     return (
         <NumberFieldPagePresenter>
@@ -41,41 +49,68 @@ export const NumberFieldPage = () => {
             <div className="px-4 py-5"></div>
             <FormGroup className="px-16">
                 <FormControlLabel control={<Checkbox onChange={considerPity} />} label="天井を考慮" />
+                <FormControlLabel 
+                    control={
+                        <Select 
+                            onChange={changeMode}
+                            defaultValue={"stoneBase"}
+                            id="calculationMode"
+                        >
+                            <MenuItem value={"stoneBase"}>所持石</MenuItem>
+                            <MenuItem value={"summonBase"}>ガチャ回数</MenuItem>
+                        </Select>
+                    } 
+                    label="から計算" 
+                    />
             </FormGroup>
-            <Box
+            {calculationMode == "stoneBase" ? (
+                <Box
                 component="form"
                 sx={{
                     display: 'flex',
-                    flexDirection: 'row', 
-                    justifyContent: 'center', 
-                    gap: 2,
+                    flexDirection: 'column', 
+                    gap: 1,
                 }}
-            >
-                <Stack spacing={1}>
-                    <div>所持石</div>
-                    <NumberField id="stones" unit="個" func={setStones} />
-                    <div>目玉の排出率</div>
-                    <NumberField id="summonRate" unit="%" func={setSummonRate} />
+                >
+                    <Stack direction="row" spacing={2} justifyContent="center">
+                        <NumberField label="所持石" id="stones" unit="個" func={setStones} key={calculationMode} />
+                        <NumberField label="ガチャ1回に必要な石" id="stonesForSummon" unit="個" func={setStoneForSummon} key={calculationMode} />
+                    </Stack>
+                    <Stack direction="row" spacing={2} justifyContent="center">
+                        <NumberField label="目玉の排出率" id="summonRate" unit="%" func={setSummonRate} />
+                        <NumberField label="希望個数" id="desiredNum" unit="個" func={setDesiredNum} />
+                    </Stack>
                     {isPityConsidered && 
-                        <div>
-                            <div className="py-2">ガチャ1回に付く天井アイテム数</div>
-                            <NumberField id="pityItemsFromSummon" unit="個" func={setPityItemsFromSummon} />
-                        </div>
+                        <Stack direction="row" spacing={2} justifyContent="center">
+                            <NumberField label="ガチャ1回に付く天井アイテム数" id="pityItemsFromSummon" unit="個" func={setPityItemsFromSummon} />
+                            <NumberField label="交換に必要な天井アイテム数" id="requiredPityItems" unit="個" func={setRequiredPityItems} />
+                        </Stack>
                     }
-                </Stack>
-                <Stack spacing={1}>
-                    <div>ガチャ1回に必要な石</div>
-                    <NumberField id="stonesForSummon" unit="個" func={setStoneForSummon} />
-                    <div>希望個数</div>
-                    <NumberField id="desiredNum" unit="個" func={setDesiredNum} />
+                </Box>
+            ) : (
+                <Box
+                component="form"
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column', 
+                    gap: 1,
+                }}
+                >
+                    <Stack direction="row" spacing={2} justifyContent="center" sx={{position:"relative", right: "131px"}}>
+                        <NumberField label="ガチャ回数" id="summons" unit="回" func={setSummons} key={calculationMode} />
+                    </Stack>
+                    <Stack direction="row" spacing={2} justifyContent="center">
+                        <NumberField label="目玉の排出率" id="summonRate" unit="%" func={setSummonRate} />
+                        <NumberField label="希望個数" id="desiredNum" unit="個" func={setDesiredNum} />
+                    </Stack>
                     {isPityConsidered && 
-                        <div>
-                            <div className="py-2">交換に必要な天井アイテム数</div>
-                            <NumberField id="requiredPityItems" unit="個" func={setRequiredPityItems} />
-                        </div>
+                        <Stack direction="row" spacing={2} justifyContent="center">
+                            <NumberField label="ガチャ1回に付く天井アイテム数" id="pityItemsFromSummon" unit="個" func={setPityItemsFromSummon} />
+                            <NumberField label="交換に必要な天井アイテム数" id="requiredPityItems" unit="個" func={setRequiredPityItems} />
+                        </Stack>
                     }
-                </Stack>
-            </Box>
+                </Box>
+            )}
             <CalculationResult 
                 stones={stones} 
                 stoneForSummon={stoneForSummon} 
@@ -84,6 +119,7 @@ export const NumberFieldPage = () => {
                 isPityConsidered={isPityConsidered}
                 pityItemsFromSummon={pityItemsFromSummon}
                 requiredPityItems={requiredPityItems}
+                summons={summons}
             />
         </NumberFieldPagePresenter>
     );

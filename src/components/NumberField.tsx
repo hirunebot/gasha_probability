@@ -16,6 +16,7 @@ export const NumberFieldPresenter: React.FC<NumberFieldPresenterProps> = (props)
 }
 
 export interface NumberFieldProps {
+    label: string;
     id: string;
     unit: string;
     func: (value: number) => void;
@@ -25,6 +26,7 @@ export const NumberField: React.FC<NumberFieldProps> = (props) => {
     const ids = "outlined-number" + props.id
     return (
         <NumberFieldPresenter>
+            <div className="py-1">{props.label}</div>
             <TextField 
                 id={ids}
                 type="number" 

@@ -22,10 +22,11 @@ export interface CalculationResultProps {
     isPityConsidered: boolean;
     pityItemsFromSummon: number;
     requiredPityItems: number;
+    summons: number;
 }
 
 export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
-    let summonable: number = 0
+    let summonable: number = props.summons
     if (props.stones > 0 && props.stoneForSummon > 0) {
         summonable = Math.trunc(props.stones / props.stoneForSummon)
     }
@@ -56,6 +57,10 @@ export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
             probAtLeastN += math.combinations(n, i) * math.pow(p, i) * math.pow(1 - p, n - i)
         }
         probAtLeastN = Math.round((1 - probAtLeastN) * 10000) / 100
+    }
+    if (desiredNum == 0 && hitsFromPity > 0) {
+        // 天井で確定入手
+        probJustN = 0
     }
     return (
         <CalculationResultPresenter>
