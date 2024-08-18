@@ -3,6 +3,8 @@ import { useState } from "react";
 import { NumberField } from "../NumberField";
 import { Box, Checkbox, FormControlLabel, FormGroup, MenuItem, Select, SelectChangeEvent, Stack } from "@mui/material";
 import { CalculationResult } from "../CalculationResult";
+import { StoneBaseForm } from "../StoneBaseForm";
+import { SummonBaseForm } from "../SummonBaseForm";
 
 export interface NumberFieldPagePresenterProps {
     children: React.ReactNode;
@@ -64,52 +66,26 @@ export const NumberFieldPage = () => {
                     />
             </FormGroup>
             {calculationMode == "stoneBase" ? (
-                <Box
-                component="form"
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column', 
-                    gap: 1,
-                }}
-                >
-                    <Stack direction="row" spacing={2} justifyContent="center">
-                        <NumberField label="所持石" id="stones" unit="個" func={setStones} key={calculationMode} />
-                        <NumberField label="ガチャ1回に必要な石" id="stonesForSummon" unit="個" func={setStoneForSummon} key={calculationMode} />
-                    </Stack>
-                    <Stack direction="row" spacing={2} justifyContent="center">
-                        <NumberField label="目玉の排出率" id="summonRate" unit="%" func={setSummonRate} />
-                        <NumberField label="希望個数" id="desiredNum" unit="個" func={setDesiredNum} />
-                    </Stack>
-                    {isPityConsidered && 
-                        <Stack direction="row" spacing={2} justifyContent="center">
-                            <NumberField label="ガチャ1回に付く天井アイテム数" id="pityItemsFromSummon" unit="個" func={setPityItemsFromSummon} />
-                            <NumberField label="交換に必要な天井アイテム数" id="requiredPityItems" unit="個" func={setRequiredPityItems} />
-                        </Stack>
-                    }
-                </Box>
+                <StoneBaseForm
+                    setStones={setStones}
+                    setStoneForSummon={setStoneForSummon}
+                    setSummonRate={setSummonRate}
+                    setDesiredNum={setDesiredNum}
+                    isPityConsidered={isPityConsidered}
+                    setPityItemsFromSummon={setPityItemsFromSummon}
+                    setRequiredPityItems={setRequiredPityItems}
+                    calculationMode={calculationMode}
+                />
             ) : (
-                <Box
-                component="form"
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column', 
-                    gap: 1,
-                }}
-                >
-                    <Stack direction="row" spacing={2} justifyContent="center" sx={{position:"relative", right: "131px"}}>
-                        <NumberField label="ガチャ回数" id="summons" unit="回" func={setSummons} key={calculationMode} />
-                    </Stack>
-                    <Stack direction="row" spacing={2} justifyContent="center">
-                        <NumberField label="目玉の排出率" id="summonRate" unit="%" func={setSummonRate} />
-                        <NumberField label="希望個数" id="desiredNum" unit="個" func={setDesiredNum} />
-                    </Stack>
-                    {isPityConsidered && 
-                        <Stack direction="row" spacing={2} justifyContent="center">
-                            <NumberField label="ガチャ1回に付く天井アイテム数" id="pityItemsFromSummon" unit="個" func={setPityItemsFromSummon} />
-                            <NumberField label="交換に必要な天井アイテム数" id="requiredPityItems" unit="個" func={setRequiredPityItems} />
-                        </Stack>
-                    }
-                </Box>
+                <SummonBaseForm
+                    setSummons={setSummons}
+                    setSummonRate={setSummonRate}
+                    setDesiredNum={setDesiredNum}
+                    isPityConsidered={isPityConsidered}
+                    setPityItemsFromSummon={setPityItemsFromSummon}
+                    setRequiredPityItems={setRequiredPityItems}
+                    calculationMode={calculationMode}
+                />
             )}
             <CalculationResult 
                 stones={stones} 
