@@ -15,12 +15,17 @@ export const SummonBaseFormPresenter: React.FC<SummonBaseFormPresenterProps> = (
 }
 
 export interface SummonBaseFormProps {
-    setSummons: (value: number) => void;
-    setSummonRate: (value: number) => void;
-    setDesiredNum: (value: number) => void;
+    summons: string;
+    summonRate: string;
+    desiredNum: string;
+    pityItemsFromSummon: string;
+    requiredPityItems: string;
+    setSummons: (value: string) => void;
+    setSummonRate: (value: string) => void;
+    setDesiredNum: (value: string) => void;
     isPityConsidered: boolean;
-    setPityItemsFromSummon: (value: number) => void;
-    setRequiredPityItems: (value: number) => void;
+    setPityItemsFromSummon: (value: string) => void;
+    setRequiredPityItems: (value: string) => void;
     calculationMode: string;
 }
 
@@ -36,16 +41,47 @@ export const SummonBaseForm: React.FC<SummonBaseFormProps> = (props) => {
                 }}
                 >
                     <Stack direction="row" spacing={2} justifyContent="center" sx={{position:"relative", right: "131px"}}>
-                        <NumberField label="ガチャ回数" id="summons" unit="回" func={props.setSummons} key={props.calculationMode} />
+                        <NumberField 
+                            label="ガチャ回数" 
+                            id="summons" 
+                            unit="回" 
+                            state={props.summons}
+                            setState={props.setSummons}
+                            key={props.calculationMode} 
+                        />
                     </Stack>
                     <Stack direction="row" spacing={2} justifyContent="center">
-                        <NumberField label="目玉の排出率" id="summonRate" unit="%" func={props.setSummonRate} />
-                        <NumberField label="希望個数" id="desiredNum" unit="個" func={props.setDesiredNum} />
+                        <NumberField 
+                            label="目玉の排出率" 
+                            id="summonRate" 
+                            unit="%"
+                            state={props.summonRate}
+                            setState={props.setSummonRate} 
+                        />
+                        <NumberField 
+                            label="希望個数"
+                            id="desiredNum"
+                            unit="個" 
+                            state={props.desiredNum}
+                            setState={props.setDesiredNum} 
+                        />
                     </Stack>
                     {props.isPityConsidered && 
                         <Stack direction="row" spacing={2} justifyContent="center">
-                            <NumberField label="ガチャ1回に付く天井アイテム数" id="pityItemsFromSummon" unit="個" func={props.setPityItemsFromSummon} />
-                            <NumberField label="交換に必要な天井アイテム数" id="requiredPityItems" unit="個" func={props.setRequiredPityItems} />
+                            <NumberField 
+                                label="ガチャ1回に付く天井アイテム数" 
+                                id="pityItemsFromSummon" 
+                                unit="個" 
+                                state={props.pityItemsFromSummon}
+                                setState={props.setPityItemsFromSummon} 
+                            />
+                            <NumberField 
+                                label="交換に必要な天井アイテム数" 
+                                id="requiredPityItems" 
+                                unit="個" 
+                                state={props.requiredPityItems}
+                                setState={props.setRequiredPityItems} 
+                            />
                         </Stack>
                     }
                 </Box>

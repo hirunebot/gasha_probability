@@ -19,17 +19,27 @@ export interface NumberFieldProps {
     label: string;
     id: string;
     unit: string;
-    func: (value: number) => void;
+    state: string
+    setState: (value: string) => void;
 } 
 
 export const NumberField: React.FC<NumberFieldProps> = (props) => {
-    const ids = "outlined-number" + props.id
+    const id = "outlined-basic" + props.id
+    const onChangeHandle = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        const result = Math.abs(Number(event.target.value)).toString();
+        if (result === "NaN") {
+            props.setState("")
+        } else {
+            props.setState(result)
+        }
+    }
     return (
         <NumberFieldPresenter>
             <div className="py-1">{props.label}</div>
             <TextField 
-                id={ids}
-                type="number" 
+                id={id}
+                type="number"
+                value={props.state}
                 variant="outlined"
                 onKeyDown={(event) => {
                     if (event.key === "e" || event.key === "E" || event.key === "-" || event.key === "+") {
@@ -39,9 +49,7 @@ export const NumberField: React.FC<NumberFieldProps> = (props) => {
                 InputProps={{
                     endAdornment: <InputAdornment position="end">{props.unit}</InputAdornment>,
                 }}
-                onChange={(event) => {
-                    props.func(Number(event.target.value))
-                }}
+                onChange={onChangeHandle}
             />
         </NumberFieldPresenter>
     );

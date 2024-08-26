@@ -19,29 +19,29 @@ export const NumberFieldPagePresenter = (props: NumberFieldPagePresenterProps) =
 }
 
 export const NumberFieldPage = () => {
-    const [stones, setStones] = useState(0)
-    const [stoneForSummon, setStoneForSummon] = useState(0)
-    const [summonRate, setSummonRate] = useState(0)
-    const [desiredNum, setDesiredNum] = useState(1)
+    const [stones, setStones] = useState('')
+    const [stoneForSummon, setStoneForSummon] = useState('')
+    const [summonRate, setSummonRate] = useState('')
+    const [desiredNum, setDesiredNum] = useState('1')
     const [isPityConsidered, setIsPityConsidered] = useState(false)
-    const [pityItemsFromSummon, setPityItemsFromSummon] = useState(0)
-    const [requiredPityItems, setRequiredPityItems] = useState(0)
+    const [pityItemsFromSummon, setPityItemsFromSummon] = useState('')
+    const [requiredPityItems, setRequiredPityItems] = useState('')
     const [calculationMode, setCalculationMode] = useState("stoneBase")
-    const [summons, setSummons] = useState(0)
+    const [summons, setSummons] = useState('')
 
     const considerPity = () => {
         if (isPityConsidered == false) {
             setIsPityConsidered(true)
         } else {
             setIsPityConsidered(false)
-            setPityItemsFromSummon(0)
-            setRequiredPityItems(0)
+            setPityItemsFromSummon('')
+            setRequiredPityItems('')
         }
     }
-    const changeMode = (event: SelectChangeEvent) => {
-        setStones(0);
-        setStoneForSummon(0);
-        setSummons(0);
+    const changeCalculationMode = (event: SelectChangeEvent) => {
+        setStones('');
+        setStoneForSummon('');
+        setSummons('');
         setCalculationMode(event.target.value as string);
     }
 
@@ -54,7 +54,7 @@ export const NumberFieldPage = () => {
                 <FormControlLabel 
                     control={
                         <Select 
-                            onChange={changeMode}
+                            onChange={changeCalculationMode}
                             defaultValue={"stoneBase"}
                             id="calculationMode"
                         >
@@ -67,6 +67,12 @@ export const NumberFieldPage = () => {
             </FormGroup>
             {calculationMode == "stoneBase" ? (
                 <StoneBaseForm
+                    stones={stones}
+                    stoneForSummon={stoneForSummon}
+                    desiredNum={desiredNum}
+                    summonRate={summonRate}
+                    pityItemsFromSummon={pityItemsFromSummon}
+                    requiredPityItems={requiredPityItems}
                     setStones={setStones}
                     setStoneForSummon={setStoneForSummon}
                     setSummonRate={setSummonRate}
@@ -78,6 +84,11 @@ export const NumberFieldPage = () => {
                 />
             ) : (
                 <SummonBaseForm
+                    summons={summons}
+                    desiredNum={desiredNum}
+                    summonRate={summonRate}
+                    pityItemsFromSummon={pityItemsFromSummon}
+                    requiredPityItems={requiredPityItems}
                     setSummons={setSummons}
                     setSummonRate={setSummonRate}
                     setDesiredNum={setDesiredNum}
@@ -88,15 +99,15 @@ export const NumberFieldPage = () => {
                 />
             )}
             <CalculationResult 
-                stones={stones} 
-                stoneForSummon={stoneForSummon} 
-                desiredNum={desiredNum} 
-                summonRate={summonRate} 
+                stones={Number(stones)} 
+                stoneForSummon={Number(stoneForSummon)} 
+                desiredNum={Number(desiredNum)} 
+                summonRate={Number(summonRate)} 
                 isPityConsidered={isPityConsidered}
-                pityItemsFromSummon={pityItemsFromSummon}
-                requiredPityItems={requiredPityItems}
+                pityItemsFromSummon={Number(pityItemsFromSummon)}
+                requiredPityItems={Number(requiredPityItems)}
                 calculationMode={calculationMode}
-                summons={summons}
+                summons={Number(summons)}
             />
         </NumberFieldPagePresenter>
     );
