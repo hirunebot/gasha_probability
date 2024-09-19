@@ -1,10 +1,11 @@
 import React from "react";
 import { useState } from "react";
-import { NumberField } from "../NumberField";
-import { Box, Checkbox, FormControlLabel, FormGroup, MenuItem, Select, SelectChangeEvent, Stack } from "@mui/material";
+import { Checkbox, FormControlLabel, FormGroup, MenuItem, Select, SelectChangeEvent, Stack } from "@mui/material";
 import { CalculationResult } from "../CalculationResult";
 import { StoneBaseForm } from "../StoneBaseForm";
 import { SummonBaseForm } from "../SummonBaseForm";
+import { useAtom } from "jotai";
+import { calculateSummonsAtom, calculationModeAtom, desiredAmountAtom, pityItemsFromSummonAtom, requiredPityItemsAtom, stoneForSummonAtom, stonesAtom, summonRateAtom } from "../../stores/atoms";
 
 export interface NumberFieldPagePresenterProps {
     children: React.ReactNode;
@@ -19,15 +20,15 @@ export const NumberFieldPagePresenter = (props: NumberFieldPagePresenterProps) =
 }
 
 export const NumberFieldPage = () => {
-    const [stones, setStones] = useState('')
-    const [stoneForSummon, setStoneForSummon] = useState('')
-    const [summonRate, setSummonRate] = useState('')
-    const [desiredNum, setDesiredNum] = useState('1')
+    const [stones, setStones] = useAtom(stonesAtom)
+    const [stoneForSummon, setStoneForSummon] = useAtom(stoneForSummonAtom)
+    const [summonRate, setSummonRate] = useAtom(summonRateAtom)
+    const [desiredAmount, setDesiredAmount] = useAtom(desiredAmountAtom)
     const [isPityConsidered, setIsPityConsidered] = useState(false)
-    const [pityItemsFromSummon, setPityItemsFromSummon] = useState('')
-    const [requiredPityItems, setRequiredPityItems] = useState('')
-    const [calculationMode, setCalculationMode] = useState("stoneBase")
-    const [summons, setSummons] = useState('')
+    const [pityItemsFromSummon, setPityItemsFromSummon] = useAtom(pityItemsFromSummonAtom)
+    const [requiredPityItems, setRequiredPityItems] = useAtom(requiredPityItemsAtom)
+    const [calculationMode, setCalculationMode] = useAtom(calculationModeAtom)
+    const [summons, calculateSummons] = useAtom(calculateSummonsAtom)
 
     const considerPity = () => {
         if (isPityConsidered == false) {
@@ -41,7 +42,7 @@ export const NumberFieldPage = () => {
     const changeCalculationMode = (event: SelectChangeEvent) => {
         setStones('');
         setStoneForSummon('');
-        setSummons('');
+        calculateSummons('');
         setCalculationMode(event.target.value as string);
     }
 
@@ -67,45 +68,15 @@ export const NumberFieldPage = () => {
             </FormGroup>
             {calculationMode == "stoneBase" ? (
                 <StoneBaseForm
-                    stones={stones}
-                    stoneForSummon={stoneForSummon}
-                    desiredNum={desiredNum}
-                    summonRate={summonRate}
-                    pityItemsFromSummon={pityItemsFromSummon}
-                    requiredPityItems={requiredPityItems}
-                    setStones={setStones}
-                    setStoneForSummon={setStoneForSummon}
-                    setSummonRate={setSummonRate}
-                    setDesiredNum={setDesiredNum}
                     isPityConsidered={isPityConsidered}
-                    setPityItemsFromSummon={setPityItemsFromSummon}
-                    setRequiredPityItems={setRequiredPityItems}
-                    calculationMode={calculationMode}
                 />
             ) : (
                 <SummonBaseForm
-                    summons={summons}
-                    desiredNum={desiredNum}
-                    summonRate={summonRate}
-                    pityItemsFromSummon={pityItemsFromSummon}
-                    requiredPityItems={requiredPityItems}
-                    setSummons={setSummons}
-                    setSummonRate={setSummonRate}
-                    setDesiredNum={setDesiredNum}
                     isPityConsidered={isPityConsidered}
-                    setPityItemsFromSummon={setPityItemsFromSummon}
-                    setRequiredPityItems={setRequiredPityItems}
-                    calculationMode={calculationMode}
                 />
             )}
             <CalculationResult 
-                stones={Number(stones)} 
-                stoneForSummon={Number(stoneForSummon)} 
-                desiredNum={Number(desiredNum)} 
-                summonRate={Number(summonRate)} 
                 isPityConsidered={isPityConsidered}
-                pityItemsFromSummon={Number(pityItemsFromSummon)}
-                requiredPityItems={Number(requiredPityItems)}
                 calculationMode={calculationMode}
                 summons={Number(summons)}
             />

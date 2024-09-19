@@ -1,5 +1,7 @@
 import { Box, Stack } from '@mui/material';
+import { useAtom } from 'jotai';
 import React from 'react';
+import { calculationModeAtom, desiredAmountNumAtom, pityItemsFromSummonNumAtom, requiredPityItemsNumAtom, summonRateNumAtom, summonsNumAtom } from '../stores/atoms';
 
 export interface CalculationResultPresenterProps {
     children: React.ReactNode;
@@ -14,38 +16,36 @@ export const CalculationResultPresenter: React.FC<CalculationResultPresenterProp
 }
 
 export interface CalculationResultProps {
-    stones: number;
-    stoneForSummon: number;
-    desiredNum: number;
-    summonRate: number;
     isPityConsidered: boolean;
-    pityItemsFromSummon: number;
-    requiredPityItems: number;
     calculationMode: string;
     summons: number;
 }
 
 export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
-    let summonable: number = props.summons
-    if (props.stones > 0 && props.stoneForSummon > 0) {
-        summonable = Math.trunc(props.stones / props.stoneForSummon)
-    }
+    const [desiredAmount, setDesiredAmount] = useAtom(desiredAmountNumAtom);
+    const [summonRate, setSummonRate] = useAtom(summonRateNumAtom);
+    const [pityItemsFromSummon, setPityItemsFromSummon] = useAtom(pityItemsFromSummonNumAtom);
+    const [requiredPityItems, setRequiredPityItems] = useAtom(requiredPityItemsNumAtom);
+    const [summons, calculateSummons] = useAtom(summonsNumAtom);
+    const [calculationMode, setCalculationMode] = useAtom(calculationModeAtom);
+
     let pityItems: number = 0
     let hitsFromPity: number = 0
-    let desiredNum: number = props.desiredNum
-    if (props.isPityConsidered && props.requiredPityItems > 0) {
-        pityItems = props.pityItemsFromSummon * summonable
-        hitsFromPity = Math.trunc(pityItems / props.requiredPityItems)
-        desiredNum = props.desiredNum - hitsFromPity
+    let desiredNum: number = desiredAmount
+    if (props.isPityConsidered && requiredPityItems > 0) {
+        pityItems = pityItemsFromSummon * summons
+        hitsFromPity = Math.trunc(pityItems / requiredPityItems)
+        // 天井の分を引き算
+        desiredNum = desiredAmount - hitsFromPity
         if (desiredNum < 0) {
             desiredNum = 0
         }
     }
 
     const math = require('mathjs')
-    const n = summonable
+    const n = summons
     const k = desiredNum
-    const p = props.summonRate / 100
+    const p = summonRate / 100
     let probJustN = 0
     if (n >= k) {
         probJustN = math.combinations(n, k) * math.pow(p, k) * math.pow(1 - p, n - k)
@@ -75,7 +75,7 @@ export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
                 }}
             >
                 <Stack spacing={2}>
-                    {props.calculationMode === "stoneBase" && <div>回せる回数･･･</div>}
+                    {calculationMode === "stoneBase" && <div>回せる回数･･･</div>}
                     {props.isPityConsidered && 
                         <div>
                             <div className="pb-4">天井アイテム数･･･</div>
@@ -95,8 +95,8 @@ export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
                     )}
                 </Stack>
                 <Stack>
-                    {props.calculationMode === "stoneBase" && 
-                        <div className="font-bold text-4xl">{summonable}回</div>
+                    {calculationMode === "stoneBase" && 
+                        <div className="font-bold text-4xl">{summons}回</div>
                     }
                     {props.isPityConsidered && 
                         <div>
