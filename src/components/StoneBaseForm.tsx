@@ -1,7 +1,7 @@
 import { Box, Stack } from "@mui/material";
 import { NumberField } from "./NumberField";
 import { useAtom } from "jotai";
-import { desiredAmountAtom, pityItemsFromSummonAtom, requiredPityItemsAtom, stoneForSummonAtom, stonesAtom, summonRateAtom } from "../stores/atoms";
+import { desiredAmountAtom, isPityConsideredAtom, pityItemsFromSummonAtom, requiredPityItemsAtom, stoneForSummonAtom, stonesAtom, summonRateAtom } from "../stores/atoms";
 
 
 export interface StoneBaseFormPresenterProps {
@@ -16,15 +16,14 @@ export const StoneBaseFormPresenter: React.FC<StoneBaseFormPresenterProps> = (pr
     );
 }
 
-export interface StoneBaseFormProps {
-    isPityConsidered: boolean;
-}
+export interface StoneBaseFormProps {}
 
-export const StoneBaseForm: React.FC<StoneBaseFormProps> = (props) => {
+export const StoneBaseForm: React.FC<StoneBaseFormProps> = () => {
     const [stones, setStones] = useAtom(stonesAtom)
     const [stoneForSummon, setStoneForSummon] = useAtom(stoneForSummonAtom)
     const [summonRate, setSummonRate] = useAtom(summonRateAtom);
     const [desiredAmount, setDesiredAmount] = useAtom(desiredAmountAtom);
+    const [isPityConsidered] = useAtom(isPityConsideredAtom);
     const [pityItemsFromSummon, setPityItemsFromSummon] = useAtom(pityItemsFromSummonAtom);
     const [requiredPityItems, setRequiredPityItems] = useAtom(requiredPityItemsAtom);
 
@@ -70,7 +69,7 @@ export const StoneBaseForm: React.FC<StoneBaseFormProps> = (props) => {
                             setState={setDesiredAmount} 
                         />
                     </Stack>
-                    {props.isPityConsidered && 
+                    {isPityConsidered && 
                         <Stack direction="row" spacing={2} justifyContent="center">
                             <NumberField 
                                 label="ガチャ1回に付く天井アイテム数" 

@@ -1,7 +1,7 @@
 import { Box, Stack } from "@mui/material";
 import { NumberField } from "./NumberField";
 import { useAtom } from "jotai";
-import { calculateSummonsAtom, desiredAmountAtom, pityItemsFromSummonAtom, requiredPityItemsAtom, summonRateAtom } from "../stores/atoms";
+import { calculateSummonsAtom, desiredAmountAtom, isPityConsideredAtom, pityItemsFromSummonAtom, requiredPityItemsAtom, summonRateAtom } from "../stores/atoms";
 
 
 export interface SummonBaseFormPresenterProps {
@@ -16,14 +16,13 @@ export const SummonBaseFormPresenter: React.FC<SummonBaseFormPresenterProps> = (
     );
 }
 
-export interface SummonBaseFormProps {
-    isPityConsidered: boolean;
-}
+export interface SummonBaseFormProps {}
 
-export const SummonBaseForm: React.FC<SummonBaseFormProps> = (props) => {
+export const SummonBaseForm: React.FC<SummonBaseFormProps> = () => {
     const [summons, calculateSummons] = useAtom(calculateSummonsAtom);
     const [summonRate, setSummonRate] = useAtom(summonRateAtom);
     const [desiredAmount, setDesiredAmount] = useAtom(desiredAmountAtom);
+    const [isPityConsidered] = useAtom(isPityConsideredAtom);
     const [pityItemsFromSummon, setPityItemsFromSummon] = useAtom(pityItemsFromSummonAtom);
     const [requiredPityItems, setRequiredPityItems] = useAtom(requiredPityItemsAtom);
     
@@ -62,7 +61,7 @@ export const SummonBaseForm: React.FC<SummonBaseFormProps> = (props) => {
                             setState={setDesiredAmount} 
                         />
                     </Stack>
-                    {props.isPityConsidered && 
+                    {isPityConsidered && 
                         <Stack direction="row" spacing={2} justifyContent="center">
                             <NumberField 
                                 label="ガチャ1回に付く天井アイテム数" 

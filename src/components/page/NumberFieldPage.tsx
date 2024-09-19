@@ -5,7 +5,7 @@ import { CalculationResult } from "../CalculationResult";
 import { StoneBaseForm } from "../StoneBaseForm";
 import { SummonBaseForm } from "../SummonBaseForm";
 import { useAtom } from "jotai";
-import { calculateSummonsAtom, calculationModeAtom, desiredAmountAtom, pityItemsFromSummonAtom, requiredPityItemsAtom, stoneForSummonAtom, stonesAtom, summonRateAtom } from "../../stores/atoms";
+import { calculateSummonsAtom, calculationModeAtom, isPityConsideredAtom, pityItemsFromSummonAtom, requiredPityItemsAtom, stoneForSummonAtom, stonesAtom } from "../../stores/atoms";
 
 export interface NumberFieldPagePresenterProps {
     children: React.ReactNode;
@@ -20,15 +20,13 @@ export const NumberFieldPagePresenter = (props: NumberFieldPagePresenterProps) =
 }
 
 export const NumberFieldPage = () => {
-    const [stones, setStones] = useAtom(stonesAtom)
-    const [stoneForSummon, setStoneForSummon] = useAtom(stoneForSummonAtom)
-    const [summonRate, setSummonRate] = useAtom(summonRateAtom)
-    const [desiredAmount, setDesiredAmount] = useAtom(desiredAmountAtom)
-    const [isPityConsidered, setIsPityConsidered] = useState(false)
-    const [pityItemsFromSummon, setPityItemsFromSummon] = useAtom(pityItemsFromSummonAtom)
-    const [requiredPityItems, setRequiredPityItems] = useAtom(requiredPityItemsAtom)
+    const [, setStones] = useAtom(stonesAtom)
+    const [, setStoneForSummon] = useAtom(stoneForSummonAtom)
+    const [isPityConsidered, setIsPityConsidered] = useAtom(isPityConsideredAtom)
+    const [, setPityItemsFromSummon] = useAtom(pityItemsFromSummonAtom)
+    const [, setRequiredPityItems] = useAtom(requiredPityItemsAtom)
     const [calculationMode, setCalculationMode] = useAtom(calculationModeAtom)
-    const [summons, calculateSummons] = useAtom(calculateSummonsAtom)
+    const [, calculateSummons] = useAtom(calculateSummonsAtom)
 
     const considerPity = () => {
         if (isPityConsidered == false) {
@@ -67,19 +65,11 @@ export const NumberFieldPage = () => {
                     />
             </FormGroup>
             {calculationMode == "stoneBase" ? (
-                <StoneBaseForm
-                    isPityConsidered={isPityConsidered}
-                />
+                <StoneBaseForm />
             ) : (
-                <SummonBaseForm
-                    isPityConsidered={isPityConsidered}
-                />
+                <SummonBaseForm />
             )}
-            <CalculationResult 
-                isPityConsidered={isPityConsidered}
-                calculationMode={calculationMode}
-                summons={Number(summons)}
-            />
+            <CalculationResult />
         </NumberFieldPagePresenter>
     );
 }

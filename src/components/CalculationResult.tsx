@@ -1,7 +1,7 @@
 import { Box, Stack } from '@mui/material';
 import { useAtom } from 'jotai';
 import React from 'react';
-import { calculationModeAtom, desiredAmountNumAtom, pityItemsFromSummonNumAtom, requiredPityItemsNumAtom, summonRateNumAtom, summonsNumAtom } from '../stores/atoms';
+import { calculationModeAtom, desiredAmountNumAtom, hitsFromPityAtom, isPityConsideredAtom, pityItemsAtom, summonRateNumAtom, summonsNumAtom } from '../stores/atoms';
 
 export interface CalculationResultPresenterProps {
     children: React.ReactNode;
@@ -15,36 +15,20 @@ export const CalculationResultPresenter: React.FC<CalculationResultPresenterProp
     );
 }
 
-export interface CalculationResultProps {
-    isPityConsidered: boolean;
-    calculationMode: string;
-    summons: number;
-}
+export interface CalculationResultProps {}
 
-export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
-    const [desiredAmount, setDesiredAmount] = useAtom(desiredAmountNumAtom);
-    const [summonRate, setSummonRate] = useAtom(summonRateNumAtom);
-    const [pityItemsFromSummon, setPityItemsFromSummon] = useAtom(pityItemsFromSummonNumAtom);
-    const [requiredPityItems, setRequiredPityItems] = useAtom(requiredPityItemsNumAtom);
-    const [summons, calculateSummons] = useAtom(summonsNumAtom);
-    const [calculationMode, setCalculationMode] = useAtom(calculationModeAtom);
-
-    let pityItems: number = 0
-    let hitsFromPity: number = 0
-    let desiredNum: number = desiredAmount
-    if (props.isPityConsidered && requiredPityItems > 0) {
-        pityItems = pityItemsFromSummon * summons
-        hitsFromPity = Math.trunc(pityItems / requiredPityItems)
-        // 天井の分を引き算
-        desiredNum = desiredAmount - hitsFromPity
-        if (desiredNum < 0) {
-            desiredNum = 0
-        }
-    }
+export const CalculationResult: React.FC<CalculationResultProps> = () => {
+    const [desiredAmount] = useAtom(desiredAmountNumAtom);
+    const [summonRate] = useAtom(summonRateNumAtom);
+    const [isPityConsidered] = useAtom(isPityConsideredAtom);
+    const [summons] = useAtom(summonsNumAtom);
+    const [calculationMode] = useAtom(calculationModeAtom);
+    const [pityItems] = useAtom(pityItemsAtom);
+    const [hitsFromPity] = useAtom(hitsFromPityAtom);
 
     const math = require('mathjs')
     const n = summons
-    const k = desiredNum
+    const k = desiredAmount
     const p = summonRate / 100
     let probJustN = 0
     if (n >= k) {
@@ -58,7 +42,7 @@ export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
         }
         probAtLeastN = Math.round((1 - probAtLeastN) * 10000) / 100
     }
-    if (desiredNum == 0 && hitsFromPity > 0) {
+    if (desiredAmount == 0 && hitsFromPity > 0) {
         // 天井で確定入手
         probJustN = 0
     }
@@ -76,21 +60,21 @@ export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
             >
                 <Stack spacing={2}>
                     {calculationMode === "stoneBase" && <div>回せる回数･･･</div>}
-                    {props.isPityConsidered && 
+                    {isPityConsidered && 
                         <div>
                             <div className="pb-4">天井アイテム数･･･</div>
                             <div>交換できる数･･･</div>
                         </div>
                         }
-                    {desiredNum == 0 ? (
+                    {desiredAmount == 0 ? (
                         <div>
-                            <div className="mb-4">{desiredNum}個以上出る確率･･･</div>
+                            <div className="mb-4">{desiredAmount}個以上出る確率･･･</div>
                             <div>1回も出ない確率･･･</div>
                         </div>
                     ) : (
                         <div>
-                            <div className="mb-4">{desiredNum}個以上出る確率･･･</div>
-                            <div>ちょうど{desiredNum}個出る確率･･･</div>
+                            <div className="mb-4">{desiredAmount}個以上出る確率･･･</div>
+                            <div>ちょうど{desiredAmount}個出る確率･･･</div>
                         </div>
                     )}
                 </Stack>
@@ -98,7 +82,7 @@ export const CalculationResult: React.FC<CalculationResultProps> = (props) => {
                     {calculationMode === "stoneBase" && 
                         <div className="font-bold text-4xl">{summons}回</div>
                     }
-                    {props.isPityConsidered && 
+                    {isPityConsidered && 
                         <div>
                             <div className="font-bold text-4xl">{pityItems}個</div>
                             <div className="font-bold text-4xl">{hitsFromPity}個</div>
