@@ -1,7 +1,7 @@
 import { Box, Stack } from '@mui/material';
 import { useAtom } from 'jotai';
 import React from 'react';
-import { calculationModeAtom, desiredAmountNumAtom, hitsFromPityAtom, isPityConsideredAtom, pityItemsAtom, summonRateNumAtom, summonsNumAtom } from '../stores/atoms';
+import { calculationModeAtom, desiredAmountNumAtom, hitsFromPityAtom, isPityConsideredAtom, pityItemsAtom, probAtLeastNAtom, probJustNAtom, summonsNumAtom } from '../stores/atoms';
 
 export interface CalculationResultPresenterProps {
     children: React.ReactNode;
@@ -19,33 +19,14 @@ export interface CalculationResultProps {}
 
 export const CalculationResult: React.FC<CalculationResultProps> = () => {
     const [desiredAmount] = useAtom(desiredAmountNumAtom);
-    const [summonRate] = useAtom(summonRateNumAtom);
     const [isPityConsidered] = useAtom(isPityConsideredAtom);
     const [summons] = useAtom(summonsNumAtom);
     const [calculationMode] = useAtom(calculationModeAtom);
     const [pityItems] = useAtom(pityItemsAtom);
     const [hitsFromPity] = useAtom(hitsFromPityAtom);
+    const [probJustN] = useAtom(probJustNAtom);
+    const [probAtLeastN] = useAtom(probAtLeastNAtom);
 
-    const math = require('mathjs')
-    const n = summons
-    const k = desiredAmount
-    const p = summonRate / 100
-    let probJustN = 0
-    if (n >= k) {
-        probJustN = math.combinations(n, k) * math.pow(p, k) * math.pow(1 - p, n - k)
-        probJustN = Math.round(probJustN * 10000) / 100
-    }
-    let probAtLeastN = 0
-    if (n >= k) {
-        for (let i = 0; i < k; i++) {
-            probAtLeastN += math.combinations(n, i) * math.pow(p, i) * math.pow(1 - p, n - i)
-        }
-        probAtLeastN = Math.round((1 - probAtLeastN) * 10000) / 100
-    }
-    if (desiredAmount == 0 && hitsFromPity > 0) {
-        // 天井で確定入手
-        probJustN = 0
-    }
     return (
         <CalculationResultPresenter>
             <Box
