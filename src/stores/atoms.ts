@@ -88,13 +88,13 @@ export const calculateSummonsAtom = atom(
 );
 export const summonsNumAtom = atom((get) => Number(get(calculateSummonsAtom)));
 
+const math = require('mathjs');
 export const probJustNAtom = atom(
     (get) => {
         const desiredAmount = get(desiredAmountNumAtom);
         const summons = get(summonsNumAtom);
         const summonRate = get(summonRateNumAtom);
         const hitsFromPity = get(hitsFromPityAtom);
-        const math = require('mathjs');
         const gachaProb = summonRate / 100;
         let probJustN = 0;
         if (summons >= desiredAmount) {
@@ -114,7 +114,6 @@ export const probAtLeastNAtom = atom(
         const desiredAmount = get(desiredAmountNumAtom);
         const summons = get(summonsNumAtom);
         const summonRate = get(summonRateNumAtom);
-        const math = require('mathjs');
         const gachaProb = summonRate / 100;
         let probAtLeastN = 0;
         if (summons >= desiredAmount) {
