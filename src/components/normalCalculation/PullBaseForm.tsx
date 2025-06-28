@@ -30,19 +30,14 @@ export const PullBaseForm: React.FC<PullBaseFormProps> = () => {
     return (
         <PullBaseFormPresenter>
             <div className="space-y-5">
-                <div className="flex justify-center">
-                    <div className="w-full max-w-sm">
-                        <ValidatedNumberField 
-                            label="ガシャ回数" 
-                            id="pulls" 
-                            unit="回" 
-                            state={pulls}
-                            setState={calculatePulls}
-                        />
-                    </div>
-                </div>
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <ValidatedNumberField 
+                        label="ガシャ回数" 
+                        id="pulls" 
+                        unit="回" 
+                        state={pulls}
+                        setState={calculatePulls}
+                    />
                     <ValidatedNumberField 
                         label="目玉の排出率" 
                         id="pullRate" 
@@ -50,6 +45,9 @@ export const PullBaseForm: React.FC<PullBaseFormProps> = () => {
                         state={pullRate}
                         setState={setPullRate} 
                     />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <ValidatedNumberField 
                         label="希望個数"
                         id="desiredNum"
@@ -57,6 +55,7 @@ export const PullBaseForm: React.FC<PullBaseFormProps> = () => {
                         state={desiredAmount}
                         setState={setDesiredAmount} 
                     />
+                    <div></div>
                 </div>
                 
                 {isPityConsidered && (
