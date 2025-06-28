@@ -1,14 +1,14 @@
 import { Box, Stack } from "@mui/material";
 import { ValidatedNumberField } from "./ValidatedNumberField";
 import { useAtom } from "jotai";
-import { desiredAmountAtom, isPityConsideredAtom, pityItemsFromPullAtom, requiredPityItemsAtom, currentPityItemsAtom, stoneForPullAtom, stonesAtom, pullRateAtom } from "../stores/atoms";
+import { calculatePullsAtom, desiredAmountAtom, isPityConsideredAtom, pityItemsFromPullAtom, requiredPityItemsAtom, currentPityItemsAtom, pullRateAtom } from "../stores/atoms";
 
 
-export interface StoneBaseFormPresenterProps {
+export interface PullBaseFormPresenterProps {
     children: React.ReactNode;
 }
 
-export const StoneBaseFormPresenter: React.FC<StoneBaseFormPresenterProps> = (props) => {
+export const PullBaseFormPresenter: React.FC<PullBaseFormPresenterProps> = (props) => {
     return (
         <div className="space-y-4">
             {props.children}
@@ -16,48 +16,42 @@ export const StoneBaseFormPresenter: React.FC<StoneBaseFormPresenterProps> = (pr
     );
 }
 
-export interface StoneBaseFormProps {}
+export interface PullBaseFormProps {}
 
-export const StoneBaseForm: React.FC<StoneBaseFormProps> = () => {
-    const [stones, setStones] = useAtom(stonesAtom)
-    const [stoneForPull, setStoneForPull] = useAtom(stoneForPullAtom)
+export const PullBaseForm: React.FC<PullBaseFormProps> = () => {
+    const [pulls, calculatePulls] = useAtom(calculatePullsAtom);
     const [pullRate, setPullRate] = useAtom(pullRateAtom);
     const [desiredAmount, setDesiredAmount] = useAtom(desiredAmountAtom);
     const [isPityConsidered] = useAtom(isPityConsideredAtom);
     const [pityItemsFromPull, setPityItemsFromPull] = useAtom(pityItemsFromPullAtom);
     const [requiredPityItems, setRequiredPityItems] = useAtom(requiredPityItemsAtom);
     const [currentPityItems, setCurrentPityItems] = useAtom(currentPityItemsAtom);
-
+    
     return (
-        <StoneBaseFormPresenter>
+        <PullBaseFormPresenter>
             <div className="space-y-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <ValidatedNumberField 
-                        label="所持石" 
-                        id="stones" 
-                        unit="個" 
-                        state={stones} 
-                        setState={setStones} 
-                    />
-                    <ValidatedNumberField 
-                        label="ガシャ1回に必要な石" 
-                        id="stonesForPull" 
-                        unit="個" 
-                        state={stoneForPull} 
-                        setState={setStoneForPull}
-                    />
+                <div className="flex justify-center">
+                    <div className="w-full max-w-sm">
+                        <ValidatedNumberField 
+                            label="ガシャ回数" 
+                            id="pulls" 
+                            unit="回" 
+                            state={pulls}
+                            setState={calculatePulls}
+                        />
+                    </div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <ValidatedNumberField 
                         label="目玉の排出率" 
                         id="pullRate" 
-                        unit="%" 
+                        unit="%"
                         state={pullRate}
                         setState={setPullRate} 
                     />
                     <ValidatedNumberField 
-                        label="希望個数" 
+                        label="希望個数"
                         id="desiredNum"
                         unit="個" 
                         state={desiredAmount}
@@ -73,15 +67,15 @@ export const StoneBaseForm: React.FC<StoneBaseFormProps> = () => {
                                 <ValidatedNumberField 
                                     label="ガシャ1回に付く天井アイテム数" 
                                     id="pityItemsFromPull" 
-                                    unit="個"
-                                    state={pityItemsFromPull} 
+                                    unit="個" 
+                                    state={pityItemsFromPull}
                                     setState={setPityItemsFromPull} 
                                 />
                                 <ValidatedNumberField 
                                     label="交換に必要な天井アイテム数" 
-                                    id="requiredPityItems"
+                                    id="requiredPityItems" 
                                     unit="個" 
-                                    state={requiredPityItems} 
+                                    state={requiredPityItems}
                                     setState={setRequiredPityItems} 
                                 />
                             </div>
@@ -99,6 +93,6 @@ export const StoneBaseForm: React.FC<StoneBaseFormProps> = () => {
                     </div>
                 )}
             </div>
-        </StoneBaseFormPresenter>
+        </PullBaseFormPresenter>
     );
 }

@@ -1,75 +1,165 @@
 import React from "react";
 import { useState } from "react";
-import { Checkbox, FormControlLabel, FormGroup, MenuItem, Select, SelectChangeEvent, Stack } from "@mui/material";
+import {
+    Button,
+    Checkbox,
+    FormControlLabel,
+    FormGroup,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    Stack,
+} from "@mui/material";
+import { Help } from "@mui/icons-material";
 import { CalculationResult } from "../CalculationResult";
 import { StoneBaseForm } from "../StoneBaseForm";
-import { SummonBaseForm } from "../SummonBaseForm";
+import { PullBaseForm } from "../PullBaseForm";
+import { HelpPage } from "./HelpPage";
+import { PageHeader } from "../PageHeader";
 import { useAtom } from "jotai";
-import { calculateSummonsAtom, calculationModeAtom, isPityConsideredAtom, pityItemsFromSummonAtom, requiredPityItemsAtom, stoneForSummonAtom, stonesAtom } from "../../stores/atoms";
+import {
+    calculatePullsAtom,
+    calculationModeAtom,
+    isPityConsideredAtom,
+    pityItemsFromPullAtom,
+    requiredPityItemsAtom,
+    currentPityItemsAtom,
+    stoneForPullAtom,
+    stonesAtom,
+} from "../../stores/atoms";
 
 export interface NumberFieldPagePresenterProps {
     children: React.ReactNode;
 }
 
-export const NumberFieldPagePresenter = (props: NumberFieldPagePresenterProps) => {
+export const NumberFieldPagePresenter = (
+    props: NumberFieldPagePresenterProps
+) => {
     return (
-        <div className="w-[744px] my-0 mx-auto">
-            {props.children}
+        <div className="min-h-screen bg-gradient-to-br from-sky-50 to-blue-100">
+            <div className="container mx-auto px-4 py-4 max-w-4xl">
+                {props.children}
+            </div>
         </div>
     );
-}
+};
 
 export const NumberFieldPage = () => {
-    const [, setStones] = useAtom(stonesAtom)
-    const [, setStoneForSummon] = useAtom(stoneForSummonAtom)
-    const [isPityConsidered, setIsPityConsidered] = useAtom(isPityConsideredAtom)
-    const [, setPityItemsFromSummon] = useAtom(pityItemsFromSummonAtom)
-    const [, setRequiredPityItems] = useAtom(requiredPityItemsAtom)
-    const [calculationMode, setCalculationMode] = useAtom(calculationModeAtom)
-    const [, calculateSummons] = useAtom(calculateSummonsAtom)
+    const [showHelp, setShowHelp] = useState(false);
+    const [, setStones] = useAtom(stonesAtom);
+    const [, setStoneForPull] = useAtom(stoneForPullAtom);
+    const [isPityConsidered, setIsPityConsidered] =
+        useAtom(isPityConsideredAtom);
+    const [, setPityItemsFromPull] = useAtom(pityItemsFromPullAtom);
+    const [, setRequiredPityItems] = useAtom(requiredPityItemsAtom);
+    const [, setCurrentPityItems] = useAtom(currentPityItemsAtom);
+    const [calculationMode, setCalculationMode] = useAtom(calculationModeAtom);
+    const [, calculatePulls] = useAtom(calculatePullsAtom);
 
     const considerPity = () => {
         if (isPityConsidered == false) {
-            setIsPityConsidered(true)
+            setIsPityConsidered(true);
         } else {
-            setIsPityConsidered(false)
-            setPityItemsFromSummon('')
-            setRequiredPityItems('')
+            setIsPityConsidered(false);
+            setPityItemsFromPull("");
+            setRequiredPityItems("");
+            setCurrentPityItems("0");
         }
-    }
+    };
     const changeCalculationMode = (event: SelectChangeEvent) => {
-        setStones('');
-        setStoneForSummon('');
-        calculateSummons('');
-        setCalculationMode(event.target.value as string);
+        setStones("");
+        setStoneForPull("");
+        calculatePulls("");
+        setCalculationMode(event.target.value as "stoneBase" | "pullBase");
+    };
+
+    if (showHelp) {
+        return <HelpPage onBack={() => setShowHelp(false)} />;
     }
 
     return (
         <NumberFieldPagePresenter>
-            <h1 className="px-4 py-5 bg-zinc-300 font-bold border-b-2 border-black">ガチャ確率計算機</h1>
-            <div className="px-4 py-5"></div>
-            <FormGroup className="px-16">
-                <FormControlLabel control={<Checkbox onChange={considerPity} />} label="天井を考慮" />
-                <FormControlLabel 
-                    control={
-                        <Select 
-                            onChange={changeCalculationMode}
-                            defaultValue={"stoneBase"}
-                            id="calculationMode"
-                        >
-                            <MenuItem value={"stoneBase"}>所持石</MenuItem>
-                            <MenuItem value={"summonBase"}>ガチャ回数</MenuItem>
-                        </Select>
-                    } 
-                    label="から計算" 
-                    />
-            </FormGroup>
-            {calculationMode == "stoneBase" ? (
-                <StoneBaseForm />
-            ) : (
-                <SummonBaseForm />
-            )}
-            <CalculationResult />
+            <PageHeader
+                title="ガシャ確率計算機"
+                buttonIcon={<Help />}
+                buttonText="使い方"
+                onButtonClick={() => setShowHelp(true)}
+            />
+
+            <div className="bg-white rounded-xl shadow-sm border border-blue-100 mb-5 p-6">
+                <h2 className="text-xl font-light text-slate-700 mb-6 flex items-center">
+                    <span className="bg-sky-200 text-sky-700 border border-sky-300 rounded-full w-8 h-8 flex items-center justify-center text-sm font-medium mr-3">
+                        1
+                    </span>
+                    計算設定
+                </h2>
+                <FormGroup>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                        <div className="flex items-center">
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        onChange={considerPity}
+                                        sx={{ color: "rgb(14 165 233)" }}
+                                    />
+                                }
+                                label="天井システムを考慮する"
+                                className="text-slate-600 text-lg"
+                            />
+                        </div>
+                        <div className="flex items-center justify-start space-x-4">
+                            <span className="text-slate-600 font-medium text-lg">
+                                計算方法:
+                            </span>
+                            <Select
+                                onChange={changeCalculationMode}
+                                defaultValue={"stoneBase"}
+                                id="calculationMode"
+                                size="medium"
+                                className="min-w-40"
+                                sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                        "&.Mui-focused fieldset": {
+                                            borderColor: "rgb(14 165 233)",
+                                        },
+                                    },
+                                }}
+                            >
+                                <MenuItem value={"stoneBase"}>
+                                    所持石から計算
+                                </MenuItem>
+                                <MenuItem value={"pullBase"}>
+                                    ガシャ回数から計算
+                                </MenuItem>
+                            </Select>
+                        </div>
+                    </div>
+                </FormGroup>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-blue-100 mb-5 p-6">
+                <h2 className="text-xl font-light text-slate-700 mb-6 flex items-center">
+                    <span className="bg-sky-200 text-sky-700 border border-sky-300 rounded-full w-8 h-8 flex items-center justify-center text-sm font-medium mr-3">
+                        2
+                    </span>
+                    入力パラメータ
+                </h2>
+                {calculationMode === "stoneBase" ? (
+                    <StoneBaseForm />
+                ) : (
+                    <PullBaseForm />
+                )}
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-blue-100 p-6 mb-8">
+                <h2 className="text-xl font-light text-slate-700 mb-6 flex items-center">
+                    <span className="bg-sky-200 text-sky-700 border border-sky-300 rounded-full w-8 h-8 flex items-center justify-center text-sm font-medium mr-3">
+                        3
+                    </span>
+                    計算結果
+                </h2>
+                <CalculationResult />
+            </div>
         </NumberFieldPagePresenter>
     );
-}
+};

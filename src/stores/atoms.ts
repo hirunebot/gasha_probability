@@ -1,128 +1,329 @@
 import { atom } from "jotai";
+import { CalculationMode, Stone, Rate, Count } from "../types/common";
+import { InputState, ValidatedInput, CalculationResult } from "../types/gasha";
+import { calculateGashaProbability } from "../domains/GashaCalculation";
+import { validationErrorsAtom } from "../hooks/useValidation";
+import {
+    validateStones,
+    validateStonePerPull,
+    validatePullRate,
+    validateDesiredAmount,
+    validatePulls,
+    validatePityItems,
+    validateRequiredPityItems,
+    validateCurrentPityItems,
+} from "../utils/validation";
 
-export const stonesAtom = atom("");
-export const stoneForSummonAtom = atom("");
-export const desiredAmountAtom = atom("1");
-export const summonRateAtom = atom("");
-export const isPityConsideredAtom = atom(false);
-export const pityItemsFromSummonAtom = atom("");
-export const requiredPityItemsAtom = atom("");
-export const calculationModeAtom = atom("stoneBase");
+export const inputStateAtom = atom<InputState>({
+    stones: "",
+    stonePerPull: "",
+    pullRate: "",
+    desiredAmount: "1",
+    calculationMode: "stoneBase",
+    isPityEnabled: false,
+    pityItemsPerPull: "",
+    pityRequiredItems: "",
+    currentPityItems: "0",
+    pulls: "",
+});
 
-export const stonesNumAtom = atom((get) => Number(get(stonesAtom)));
-export const stoneForSummonNumAtom = atom((get) => Number(get(stoneForSummonAtom)));
-export const pityItemsAtom = atom(
-    (get) => {
-        const pityItemsFromSummon = get(pityItemsFromSummonNumAtom);
-        const summons = get(summonsNumAtom);
-        const pityItems = pityItemsFromSummon * summons;
-        return pityItems;
-    },
-);
-export const hitsFromPityAtom = atom(
-    (get) => {
-        const requiredPityItems = get(requiredPityItemsNumAtom);
-        if (requiredPityItems === 0) {
-            return 0;
-        } else {
-            const pityItems = get(pityItemsAtom);
-            const requiredPityItems = get(requiredPityItemsNumAtom);
-            const hitsFromPity = Math.trunc(pityItems / requiredPityItems);
-            return hitsFromPity;
-        }
-    },
-);
-export const desiredAmountNumAtom = atom(
-    (get) => {
-        const isPityConsidered = get(isPityConsideredAtom);
-        const requiredPityItems = get(requiredPityItemsNumAtom);
-        if (isPityConsidered && requiredPityItems > 0) {
-            const desiredAmount = Number(get(desiredAmountAtom));
-            const hitsFromPity = get(hitsFromPityAtom);
-            // 天井分を引き算
-            let desiredAmountWithPity = desiredAmount - hitsFromPity;
-            if (desiredAmountWithPity < 0) {
-                desiredAmountWithPity = 0;
-            }
-            return desiredAmountWithPity;
-        } else {
-            return Number(get(desiredAmountAtom));
-        }
-    },
-);
-export const summonRateNumAtom = atom((get) => Number(get(summonRateAtom)));
-export const pityItemsFromSummonNumAtom = atom((get) => Number(get(pityItemsFromSummonAtom)));
-export const requiredPityItemsNumAtom = atom((get) => Number(get(requiredPityItemsAtom)));
-
-export const summonsAtom = atom("");
-export const calculateSummonsAtom = atom(
-    (get) => {
-        const calculationMode = get(calculationModeAtom);
-        if (calculationMode === "stoneBase") {
-            const stones = get(stonesNumAtom);
-            const stoneForSummon = get(stoneForSummonNumAtom);
-            if (stoneForSummon === 0) {
-                return '';  
-            } else {
-                return String(Math.trunc(stones / stoneForSummon));
-            }
-        } else if (calculationMode === "summonBase") {
-            return get(summonsAtom);
-        }
-        return '';
-    },
-    (get, set, inputtedSummons: string) => {
-        const calculationMode = get(calculationModeAtom);
-        if (calculationMode === "stoneBase") {
-            const stoneForSummon = get(stoneForSummonNumAtom);
-            if (stoneForSummon === 0) {
-                set(summonsAtom, '');
-            } else {
-                const stones = get(stonesNumAtom);
-                set(summonsAtom, String(Math.trunc(stones / stoneForSummon)));
-            }
-        } else if (calculationMode === "summonBase") {
-            set(summonsAtom, inputtedSummons);
-        }
-    },
-);
-export const summonsNumAtom = atom((get) => Number(get(calculateSummonsAtom)));
-
-const math = require('mathjs');
-export const probJustNAtom = atom(
-    (get) => {
-        const desiredAmount = get(desiredAmountNumAtom);
-        const summons = get(summonsNumAtom);
-        const summonRate = get(summonRateNumAtom);
-        const hitsFromPity = get(hitsFromPityAtom);
-        const gachaProb = summonRate / 100;
-        let probJustN = 0;
-        if (summons >= desiredAmount) {
-            probJustN = math.combinations(summons, desiredAmount) * math.pow(gachaProb, desiredAmount) * math.pow(1 - gachaProb, summons - desiredAmount);
-            // 小数点第二位まで表示
-            probJustN = Math.round(probJustN * 10000) / 100;
-        }
-        if (desiredAmount == 0 && hitsFromPity > 0) {
-            // 天井で確定入手
-            probJustN = 0;
-        }
-        return probJustN;
-    },
-);
-export const probAtLeastNAtom = atom(
-    (get) => {
-        const desiredAmount = get(desiredAmountNumAtom);
-        const summons = get(summonsNumAtom);
-        const summonRate = get(summonRateNumAtom);
-        const gachaProb = summonRate / 100;
-        let probAtLeastN = 0;
-        if (summons >= desiredAmount) {
-            for (let i = 0; i < desiredAmount; i++) {
-                probAtLeastN += math.combinations(summons, i) * math.pow(gachaProb, i) * math.pow(1 - gachaProb, summons - i);
-            }
-            // 小数点第二位まで表示
-            probAtLeastN = Math.round((1 - probAtLeastN) * 10000) / 100;
-        }
-        return probAtLeastN;
+export const stonesAtom = atom(
+    (get) => get(inputStateAtom).stones,
+    (get, set, value: string) => {
+        const currentState = get(inputStateAtom);
+        set(inputStateAtom, { ...currentState, stones: value });
     }
 );
+
+export const stoneForPullAtom = atom(
+    (get) => get(inputStateAtom).stonePerPull,
+    (get, set, value: string) => {
+        const currentState = get(inputStateAtom);
+        set(inputStateAtom, { ...currentState, stonePerPull: value });
+    }
+);
+
+export const stoneForSummonAtom = stoneForPullAtom;
+
+export const pullRateAtom = atom(
+    (get) => get(inputStateAtom).pullRate,
+    (get, set, value: string) => {
+        const currentState = get(inputStateAtom);
+        set(inputStateAtom, { ...currentState, pullRate: value });
+    }
+);
+
+export const summonRateAtom = pullRateAtom;
+
+export const desiredAmountAtom = atom(
+    (get) => get(inputStateAtom).desiredAmount,
+    (get, set, value: string) => {
+        const currentState = get(inputStateAtom);
+        set(inputStateAtom, { ...currentState, desiredAmount: value });
+    }
+);
+
+export const calculationModeAtom = atom(
+    (get) => get(inputStateAtom).calculationMode,
+    (get, set, value: CalculationMode) => {
+        const currentState = get(inputStateAtom);
+        set(inputStateAtom, { ...currentState, calculationMode: value });
+    }
+);
+
+export const isPityConsideredAtom = atom(
+    (get) => get(inputStateAtom).isPityEnabled,
+    (get, set, value: boolean) => {
+        const currentState = get(inputStateAtom);
+        set(inputStateAtom, { ...currentState, isPityEnabled: value });
+    }
+);
+
+export const pityItemsFromPullAtom = atom(
+    (get) => get(inputStateAtom).pityItemsPerPull,
+    (get, set, value: string) => {
+        const currentState = get(inputStateAtom);
+        set(inputStateAtom, { ...currentState, pityItemsPerPull: value });
+    }
+);
+
+export const pityItemsFromSummonAtom = pityItemsFromPullAtom;
+
+export const requiredPityItemsAtom = atom(
+    (get) => get(inputStateAtom).pityRequiredItems,
+    (get, set, value: string) => {
+        const currentState = get(inputStateAtom);
+        set(inputStateAtom, { ...currentState, pityRequiredItems: value });
+    }
+);
+
+export const currentPityItemsAtom = atom(
+    (get) => get(inputStateAtom).currentPityItems,
+    (get, set, value: string) => {
+        const currentState = get(inputStateAtom);
+        set(inputStateAtom, { ...currentState, currentPityItems: value });
+    }
+);
+
+export const pullsAtom = atom(
+    (get) => get(inputStateAtom).pulls,
+    (get, set, value: string) => {
+        const currentState = get(inputStateAtom);
+        set(inputStateAtom, { ...currentState, pulls: value });
+    }
+);
+
+export const summonsAtom = pullsAtom;
+
+export const validatedInputAtom = atom((get) => {
+    const inputState = get(inputStateAtom);
+
+    const stonesResult = validateStones(inputState.stones);
+    const stonePerPullResult = validateStonePerPull(
+        inputState.stonePerPull
+    );
+    const pullRateResult = validatePullRate(inputState.pullRate);
+    const desiredAmountResult = validateDesiredAmount(inputState.desiredAmount);
+
+    const results = [
+        stonesResult,
+        stonePerPullResult,
+        pullRateResult,
+        desiredAmountResult,
+    ];
+
+    let pullsResult;
+    if (inputState.calculationMode === "pullBase") {
+        pullsResult = validatePulls(inputState.pulls);
+        results.push(pullsResult);
+    }
+
+    let pityItemsResult;
+    let requiredPityItemsResult;
+    let currentPityItemsResult;
+    if (inputState.isPityEnabled) {
+        pityItemsResult = validatePityItems(inputState.pityItemsPerPull);
+        requiredPityItemsResult = validateRequiredPityItems(
+            inputState.pityRequiredItems
+        );
+        currentPityItemsResult = validateCurrentPityItems(
+            inputState.currentPityItems
+        );
+        results.push(pityItemsResult, requiredPityItemsResult, currentPityItemsResult);
+    }
+
+    const failedResult = results.find((result) => !result.ok);
+    if (failedResult) {
+        return failedResult;
+    }
+
+    const validatedInput: ValidatedInput = {
+        stones: stonesResult.ok ? stonesResult.value : (0 as Stone),
+        stonePerPull: stonePerPullResult.ok
+            ? stonePerPullResult.value
+            : (0 as Stone),
+        pullRate: pullRateResult.ok ? pullRateResult.value : (0 as Rate),
+        desiredAmount: desiredAmountResult.ok
+            ? desiredAmountResult.value
+            : (0 as Count),
+        calculationMode: inputState.calculationMode,
+    };
+
+    if (inputState.calculationMode === "pullBase" && pullsResult?.ok) {
+        validatedInput.pulls = pullsResult.value;
+    }
+
+    if (
+        inputState.isPityEnabled &&
+        pityItemsResult?.ok &&
+        requiredPityItemsResult?.ok &&
+        currentPityItemsResult?.ok
+    ) {
+        validatedInput.pityConfig = {
+            itemsPerPull: pityItemsResult.value,
+            requiredItems: requiredPityItemsResult.value,
+            currentPityItems: currentPityItemsResult.value,
+        };
+    }
+
+    return { ok: true, value: validatedInput };
+});
+
+export const calculationResultAtom = atom((get) => {
+    const validatedInputResult = get(validatedInputAtom);
+
+    if (!validatedInputResult.ok) {
+        return validatedInputResult;
+    }
+
+    return calculateGashaProbability(
+        validatedInputResult.value as ValidatedInput
+    );
+});
+
+export const pullsNumAtom = atom((get) => {
+    const result = get(calculationResultAtom);
+    if (!result.ok) return 0;
+    return (result.value as CalculationResult).pulls;
+});
+
+export const summonsNumAtom = pullsNumAtom;
+
+export const probJustNAtom = atom((get) => {
+    const result = get(calculationResultAtom);
+    if (!result.ok) return 0;
+    return (result.value as CalculationResult).probJustN;
+});
+
+export const probAtLeastNAtom = atom((get) => {
+    const result = get(calculationResultAtom);
+    if (!result.ok) return 0;
+    return (result.value as CalculationResult).probAtLeastN;
+});
+
+export const pityItemsAtom = atom((get) => {
+    const result = get(calculationResultAtom);
+    if (!result.ok) return 0;
+    const calcResult = result.value as CalculationResult;
+    return calcResult.pityInfo?.totalPityItems || 0;
+});
+
+export const hitsFromPityAtom = atom((get) => {
+    const result = get(calculationResultAtom);
+    if (!result.ok) return 0;
+    const calcResult = result.value as CalculationResult;
+    return calcResult.pityInfo?.guaranteedHits || 0;
+});
+
+export const stonesNumAtom = atom((get) => {
+    const stonesStr = get(stonesAtom);
+    const result = validateStones(stonesStr);
+    return result.ok ? result.value : 0;
+});
+
+export const stoneForPullNumAtom = atom((get) => {
+    const stoneForPullStr = get(stoneForPullAtom);
+    const result = validateStonePerPull(stoneForPullStr);
+    return result.ok ? result.value : 0;
+});
+
+export const stoneForSummonNumAtom = stoneForPullNumAtom;
+
+export const pullRateNumAtom = atom((get) => {
+    const pullRateStr = get(pullRateAtom);
+    const result = validatePullRate(pullRateStr);
+    return result.ok ? result.value : 0;
+});
+
+export const summonRateNumAtom = pullRateNumAtom;
+
+export const desiredAmountNumAtom = atom((get) => {
+    const desiredAmountStr = get(desiredAmountAtom);
+    const result = validateDesiredAmount(desiredAmountStr);
+    return result.ok ? result.value : 0;
+});
+
+export const pityItemsFromPullNumAtom = atom((get) => {
+    const pityItemsStr = get(pityItemsFromPullAtom);
+    const result = validatePityItems(pityItemsStr);
+    return result.ok ? result.value : 0;
+});
+
+export const pityItemsFromSummonNumAtom = pityItemsFromPullNumAtom;
+
+export const requiredPityItemsNumAtom = atom((get) => {
+    const requiredPityItemsStr = get(requiredPityItemsAtom);
+    const result = validateRequiredPityItems(requiredPityItemsStr);
+    return result.ok ? result.value : 0;
+});
+
+export const currentPityItemsNumAtom = atom((get) => {
+    const currentPityItemsStr = get(currentPityItemsAtom);
+    const result = validateCurrentPityItems(currentPityItemsStr);
+    return result.ok ? result.value : 0;
+});
+
+export const calculatePullsAtom = atom(
+    (get) => {
+        const inputState = get(inputStateAtom);
+        if (inputState.calculationMode === "stoneBase") {
+            const stones = get(stonesNumAtom);
+            const stoneForPull = get(stoneForPullNumAtom);
+            if (stoneForPull === 0) {
+                return "";
+            }
+            return String(Math.trunc(stones / stoneForPull));
+        } else {
+            return inputState.pulls;
+        }
+    },
+    (get, set, inputtedPulls: string) => {
+        const inputState = get(inputStateAtom);
+        if (inputState.calculationMode === "stoneBase") {
+            const stones = get(stonesNumAtom);
+            const stoneForPull = get(stoneForPullNumAtom);
+            if (stoneForPull === 0) {
+                set(pullsAtom, "");
+            } else {
+                set(pullsAtom, String(Math.trunc(stones / stoneForPull)));
+            }
+        } else {
+            set(pullsAtom, inputtedPulls);
+        }
+    }
+);
+
+export const calculateSummonsAtom = calculatePullsAtom;
+
+export const hasErrorsAtom = atom((get) => {
+    const errors = get(validationErrorsAtom);
+    return Object.keys(errors).length > 0;
+});
+
+export const errorMessageAtom = atom((get) => {
+    const result = get(calculationResultAtom);
+    if (!result.ok) {
+        return (result as { ok: false; error: string }).error;
+    }
+    return null;
+});
