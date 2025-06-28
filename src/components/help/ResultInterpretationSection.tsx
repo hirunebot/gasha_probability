@@ -7,8 +7,8 @@ export const ResultInterpretationSection: React.FC = () => {
                 計算結果の見方
             </h2>
             <div className="space-y-6">
-                <div className="bg-sky-50 border border-sky-200 rounded-xl p-6">
-                    <h3 className="text-lg font-medium text-sky-700 mb-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                    <h3 className="text-lg font-medium text-blue-700 mb-4">
                         ○個以上出る確率
                     </h3>
                     <p className="text-slate-600">

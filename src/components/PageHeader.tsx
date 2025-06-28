@@ -16,7 +16,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 }) => {
     return (
         <div className="bg-white rounded-xl shadow-sm border border-blue-100 mb-6 overflow-hidden">
-            <div className="bg-gradient-to-r from-sky-500 to-blue-600 px-6 py-4">
+            <div className="bg-blue-500 px-6 py-4">
                 <div className="flex items-center justify-between">
                     <div className="flex-1"></div>
                     <h1 className="text-3xl font-light text-white text-center tracking-wide flex-1">

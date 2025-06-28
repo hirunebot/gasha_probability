@@ -34,8 +34,8 @@ export const NumberFieldPagePresenter = (
     props: NumberFieldPagePresenterProps
 ) => {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-sky-50 to-blue-100">
-            <div className="container mx-auto px-4 py-4 max-w-4xl">
+        <div className="min-h-screen bg-blue-50">
+            <div className="container mx-auto px-4 py-4 pb-12 max-w-4xl">
                 {props.children}
             </div>
         </div>
@@ -85,10 +85,7 @@ export const NumberFieldPage = () => {
             />
 
             <div className="bg-white rounded-xl shadow-sm border border-blue-100 mb-5 p-6">
-                <h2 className="text-xl font-light text-slate-700 mb-6 flex items-center">
-                    <span className="bg-sky-200 text-sky-700 border border-sky-300 rounded-full w-8 h-8 flex items-center justify-center text-sm font-medium mr-3">
-                        1
-                    </span>
+                <h2 className="text-xl font-light text-slate-700 mb-6">
                     計算設定
                 </h2>
                 <FormGroup>
@@ -105,8 +102,8 @@ export const NumberFieldPage = () => {
                                 className="text-slate-600 text-lg"
                             />
                         </div>
-                        <div className="flex items-center justify-start space-x-4">
-                            <span className="text-slate-600 font-medium text-lg">
+                        <div className="flex items-center space-x-4">
+                            <span className="text-slate-600 font-medium text-lg whitespace-nowrap">
                                 計算方法:
                             </span>
                             <Select
@@ -114,7 +111,7 @@ export const NumberFieldPage = () => {
                                 defaultValue={"stoneBase"}
                                 id="calculationMode"
                                 size="medium"
-                                className="min-w-40"
+                                className="flex-1"
                                 sx={{
                                     "& .MuiOutlinedInput-root": {
                                         "&.Mui-focused fieldset": {
@@ -136,10 +133,7 @@ export const NumberFieldPage = () => {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-blue-100 mb-5 p-6">
-                <h2 className="text-xl font-light text-slate-700 mb-6 flex items-center">
-                    <span className="bg-sky-200 text-sky-700 border border-sky-300 rounded-full w-8 h-8 flex items-center justify-center text-sm font-medium mr-3">
-                        2
-                    </span>
+                <h2 className="text-xl font-light text-slate-700 mb-6">
                     入力パラメータ
                 </h2>
                 {calculationMode === "stoneBase" ? (
@@ -150,10 +144,7 @@ export const NumberFieldPage = () => {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-blue-100 p-6 mb-8">
-                <h2 className="text-xl font-light text-slate-700 mb-6 flex items-center">
-                    <span className="bg-sky-200 text-sky-700 border border-sky-300 rounded-full w-8 h-8 flex items-center justify-center text-sm font-medium mr-3">
-                        3
-                    </span>
+                <h2 className="text-xl font-light text-slate-700 mb-6">
                     計算結果
                 </h2>
                 <CalculationResult />

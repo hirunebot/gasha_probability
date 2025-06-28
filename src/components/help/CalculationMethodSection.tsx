@@ -7,8 +7,8 @@ export const CalculationMethodSection: React.FC = () => {
                 計算方法
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-sky-50 border border-sky-200 rounded-xl p-6">
-                    <h3 className="text-xl font-medium text-sky-700 mb-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                    <h3 className="text-xl font-medium text-blue-700 mb-4">
                         所持石から計算
                     </h3>
                     <p className="text-slate-600">

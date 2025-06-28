@@ -2,7 +2,7 @@ import React from "react";
 
 const SectionHeader: React.FC<{ number: number; title: string }> = ({ number, title }) => (
     <h3 className="text-xl font-medium text-slate-700 mb-6 flex items-center">
-        <span className="bg-sky-200 text-sky-700 border border-sky-300 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
+        <span className="bg-blue-200 text-blue-700 border border-blue-300 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
             {number}
         </span>
         {title}
