@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import { Help } from "@mui/icons-material";
 import {
     Button,
     Checkbox,
@@ -7,37 +6,34 @@ import {
     FormGroup,
     MenuItem,
     Select,
-    SelectChangeEvent,
+    type SelectChangeEvent,
     Stack,
 } from "@mui/material";
-import { Help } from "@mui/icons-material";
-import { CalculationResult, StoneBaseForm, PullBaseForm } from "../normalCalculation";
-import { HelpPage } from "./HelpPage";
-import { PageHeader } from "../PageHeader";
 import { useAtom } from "jotai";
+import type React from "react";
+import { useState } from "react";
 import {
     calculatePullsAtom,
     calculationModeAtom,
+    currentPityItemsAtom,
     isPityConsideredAtom,
     pityItemsFromPullAtom,
     requiredPityItemsAtom,
-    currentPityItemsAtom,
     stoneForPullAtom,
     stonesAtom,
 } from "../../stores/atoms";
+import { CalculationResult, PullBaseForm, StoneBaseForm } from "../normalCalculation";
+import { PageHeader } from "../PageHeader";
+import { HelpPage } from "./HelpPage";
 
 export interface NumberFieldPagePresenterProps {
     children: React.ReactNode;
 }
 
-export const NumberFieldPagePresenter = (
-    props: NumberFieldPagePresenterProps
-) => {
+export const NumberFieldPagePresenter = (props: NumberFieldPagePresenterProps) => {
     return (
         <div className="min-h-screen bg-blue-50">
-            <div className="container mx-auto px-4 py-4 pb-12 max-w-4xl">
-                {props.children}
-            </div>
+            <div className="container mx-auto px-4 py-4 pb-12 max-w-4xl">{props.children}</div>
         </div>
     );
 };
@@ -46,8 +42,7 @@ export const NumberFieldPage = () => {
     const [showHelp, setShowHelp] = useState(false);
     const [, setStones] = useAtom(stonesAtom);
     const [, setStoneForPull] = useAtom(stoneForPullAtom);
-    const [isPityConsidered, setIsPityConsidered] =
-        useAtom(isPityConsideredAtom);
+    const [isPityConsidered, setIsPityConsidered] = useAtom(isPityConsideredAtom);
     const [, setPityItemsFromPull] = useAtom(pityItemsFromPullAtom);
     const [, setRequiredPityItems] = useAtom(requiredPityItemsAtom);
     const [, setCurrentPityItems] = useAtom(currentPityItemsAtom);
@@ -85,9 +80,7 @@ export const NumberFieldPage = () => {
             />
 
             <div className="bg-white rounded-xl shadow-sm border border-blue-100 mb-5 p-6">
-                <h2 className="text-xl font-light text-slate-700 mb-6">
-                    計算設定
-                </h2>
+                <h2 className="text-xl font-light text-slate-700 mb-6">計算設定</h2>
                 <FormGroup>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
                         <div className="flex items-center">
@@ -120,12 +113,8 @@ export const NumberFieldPage = () => {
                                     },
                                 }}
                             >
-                                <MenuItem value={"stoneBase"}>
-                                    所持石から計算
-                                </MenuItem>
-                                <MenuItem value={"pullBase"}>
-                                    ガシャ回数から計算
-                                </MenuItem>
+                                <MenuItem value={"stoneBase"}>所持石から計算</MenuItem>
+                                <MenuItem value={"pullBase"}>ガシャ回数から計算</MenuItem>
                             </Select>
                         </div>
                     </div>
@@ -133,20 +122,12 @@ export const NumberFieldPage = () => {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-blue-100 mb-5 p-6">
-                <h2 className="text-xl font-light text-slate-700 mb-6">
-                    入力パラメータ
-                </h2>
-                {calculationMode === "stoneBase" ? (
-                    <StoneBaseForm />
-                ) : (
-                    <PullBaseForm />
-                )}
+                <h2 className="text-xl font-light text-slate-700 mb-6">入力パラメータ</h2>
+                {calculationMode === "stoneBase" ? <StoneBaseForm /> : <PullBaseForm />}
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-blue-100 p-6 mb-8">
-                <h2 className="text-xl font-light text-slate-700 mb-6">
-                    計算結果
-                </h2>
+                <h2 className="text-xl font-light text-slate-700 mb-6">計算結果</h2>
                 <CalculationResult />
             </div>
         </NumberFieldPagePresenter>

@@ -1,16 +1,15 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
+import type { Count, Rate, Stone } from "../../types/common";
+import type { ValidatedInput } from "../../types/gasha";
 import {
     calculateGashaProbability,
-    calculateProbabilityJustN,
     calculateProbabilityAtLeastN,
+    calculateProbabilityJustN,
     calculatePullsFromStones,
     testUtils,
 } from "../GashaCalculation";
-import { ValidatedInput } from "../../types/gasha";
-import { Stone, Rate, Count } from "../../types/common";
 
-const { mathUtils, calculatePityInfo, calculateBinomialProbability } =
-    testUtils;
+const { mathUtils, calculatePityInfo, calculateBinomialProbability } = testUtils;
 
 describe("GashaCalculation", () => {
     describe("mathUtils", () => {
@@ -35,22 +34,14 @@ describe("GashaCalculation", () => {
 
     describe("calculatePityInfo", () => {
         test("天井情報の計算が正しい", () => {
-            const result = calculatePityInfo(
-                100 as Count,
-                1 as Count,
-                10 as Count
-            );
+            const result = calculatePityInfo(100 as Count, 1 as Count, 10 as Count);
 
             expect(result.totalPityItems).toBe(100);
             expect(result.guaranteedHits).toBe(10);
         });
 
         test("余りが出る場合の天井計算", () => {
-            const result = calculatePityInfo(
-                105 as Count,
-                1 as Count,
-                10 as Count
-            );
+            const result = calculatePityInfo(105 as Count, 1 as Count, 10 as Count);
 
             expect(result.totalPityItems).toBe(105);
             expect(result.guaranteedHits).toBe(10);
@@ -74,10 +65,7 @@ describe("GashaCalculation", () => {
 
     describe("calculatePullsFromStones", () => {
         test("石からガシャ回数を正しく計算", () => {
-            const result = calculatePullsFromStones(
-                3000 as Stone,
-                300 as Stone
-            );
+            const result = calculatePullsFromStones(3000 as Stone, 300 as Stone);
             expect(result.ok).toBe(true);
             if (result.ok) {
                 expect(result.value).toBe(10);
@@ -92,11 +80,7 @@ describe("GashaCalculation", () => {
 
     describe("calculateProbabilityJustN", () => {
         test("基本的な確率計算", () => {
-            const result = calculateProbabilityJustN(
-                10 as Count,
-                1 as Count,
-                10 as Rate
-            );
+            const result = calculateProbabilityJustN(10 as Count, 1 as Count, 10 as Rate);
 
             expect(result.ok).toBe(true);
             if (result.ok) {

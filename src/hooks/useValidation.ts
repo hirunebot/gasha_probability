@@ -1,16 +1,15 @@
+import { atom, useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
-import { useAtom } from "jotai";
-import { atom } from "jotai";
-import { Result, isOk, isErr } from "../types/common";
-import { InputState, ValidatedInput } from "../types/gasha";
+import { isErr, isOk, type Result } from "../types/common";
+import type { InputState, ValidatedInput } from "../types/gasha";
 import {
-    validateStones,
-    validateStonePerPull,
-    validatePullRate,
     validateDesiredAmount,
-    validatePulls,
     validatePityItems,
+    validatePullRate,
+    validatePulls,
     validateRequiredPityItems,
+    validateStonePerPull,
+    validateStones,
 } from "../utils/validation";
 
 export const validationErrorsAtom = atom<Record<string, string>>({});
@@ -141,14 +140,11 @@ export const useInputValidation = () => {
                     : baseFields;
 
             if (inputState.isPityEnabled) {
-                (fieldsToValidate as any).pityItemsPerPull =
-                    inputState.pityItemsPerPull;
-                (fieldsToValidate as any).pityRequiredItems =
-                    inputState.pityRequiredItems;
+                (fieldsToValidate as any).pityItemsPerPull = inputState.pityItemsPerPull;
+                (fieldsToValidate as any).pityRequiredItems = inputState.pityRequiredItems;
             }
 
-            const { results, hasErrors } =
-                validateMultipleFields(fieldsToValidate);
+            const { results, hasErrors } = validateMultipleFields(fieldsToValidate);
 
             if (hasErrors) {
                 const errorMessages = Object.values(results)
@@ -160,20 +156,13 @@ export const useInputValidation = () => {
 
             const validatedInput: ValidatedInput = {
                 stones: results.stones.ok ? results.stones.value : 0,
-                stonePerPull: results.stonePerPull.ok
-                    ? results.stonePerPull.value
-                    : 0,
+                stonePerPull: results.stonePerPull.ok ? results.stonePerPull.value : 0,
                 pullRate: results.pullRate.ok ? results.pullRate.value : 0,
-                desiredAmount: results.desiredAmount.ok
-                    ? results.desiredAmount.value
-                    : 0,
+                desiredAmount: results.desiredAmount.ok ? results.desiredAmount.value : 0,
                 calculationMode: inputState.calculationMode,
             };
 
-            if (
-                inputState.calculationMode === "pullBase" &&
-                results.pulls?.ok
-            ) {
+            if (inputState.calculationMode === "pullBase" && results.pulls?.ok) {
                 validatedInput.pulls = results.pulls.value;
             }
 

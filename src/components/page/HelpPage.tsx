@@ -1,13 +1,13 @@
-import React from "react";
 import { ArrowBack } from "@mui/icons-material";
-import { PageHeader } from "../PageHeader";
+import type React from "react";
 import {
-    OverviewSection,
     CalculationMethodSection,
     InputFieldsSection,
+    OverviewSection,
     ResultInterpretationSection,
     UsageNotesSection,
 } from "../help";
+import { PageHeader } from "../PageHeader";
 
 export interface HelpPageProps {
     onBack: () => void;

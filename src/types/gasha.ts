@@ -1,4 +1,4 @@
-import { Stone, Rate, Count, Percentage, CalculationMode } from "./common";
+import type { CalculationMode, Count, Percentage, Rate, Stone } from "./common";
 
 export interface GashaParameters {
     stones: Stone;

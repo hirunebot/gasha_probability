@@ -1,17 +1,17 @@
 import {
-    Result,
-    Stone,
-    Rate,
-    Count,
-    Percentage,
-    ok,
+    type Count,
     err,
+    ok,
+    type Percentage,
+    type Rate,
+    type Result,
+    type Stone,
 } from "../types/common";
 import {
+    type CalculationResult,
     GashaParameters,
-    CalculationResult,
-    PityInfo,
-    ValidatedInput,
+    type PityInfo,
+    type ValidatedInput,
 } from "../types/gasha";
 
 const mathUtils = {
@@ -27,11 +27,11 @@ const mathUtils = {
     },
 
     pow: (base: number, exponent: number): number => {
-        return Math.pow(base, exponent);
+        return base ** exponent;
     },
 
     roundToDecimalPlaces: (value: number, places: number): number => {
-        const multiplier = Math.pow(10, places);
+        const multiplier = 10 ** places;
         return Math.round(value * multiplier) / multiplier;
     },
 };
@@ -54,11 +54,7 @@ const calculatePityInfo = (
     };
 };
 
-const calculateBinomialProbability = (
-    n: number,
-    k: number,
-    p: number
-): number => {
+const calculateBinomialProbability = (n: number, k: number, p: number): number => {
     if (n < 0 || k < 0 || k > n || p < 0 || p > 1) {
         return 0;
     }
@@ -81,11 +77,7 @@ export const calculateProbabilityJustN = (
             ? Math.max(0, desiredAmount - guaranteedHits)
             : desiredAmount;
 
-        if (
-            adjustedDesiredAmount === 0 &&
-            guaranteedHits &&
-            guaranteedHits > 0
-        ) {
+        if (adjustedDesiredAmount === 0 && guaranteedHits && guaranteedHits > 0) {
             return ok(0 as Percentage);
         }
 
@@ -94,16 +86,9 @@ export const calculateProbabilityJustN = (
         }
 
         const gashaProb = pullRate / 100;
-        const probability = calculateBinomialProbability(
-            pulls,
-            adjustedDesiredAmount,
-            gashaProb
-        );
+        const probability = calculateBinomialProbability(pulls, adjustedDesiredAmount, gashaProb);
 
-        const roundedProb = mathUtils.roundToDecimalPlaces(
-            probability * 100,
-            2
-        );
+        const roundedProb = mathUtils.roundToDecimalPlaces(probability * 100, 2);
         return ok(roundedProb as Percentage);
     } catch (error) {
         return err(
@@ -123,11 +108,7 @@ export const calculateProbabilityAtLeastN = (
             ? Math.max(0, desiredAmount - guaranteedHits)
             : desiredAmount;
 
-        if (
-            adjustedDesiredAmount === 0 &&
-            guaranteedHits &&
-            guaranteedHits > 0
-        ) {
+        if (adjustedDesiredAmount === 0 && guaranteedHits && guaranteedHits > 0) {
             return ok(100 as Percentage);
         }
 
@@ -139,18 +120,11 @@ export const calculateProbabilityAtLeastN = (
         let cumulativeProb = 0;
 
         for (let i = 0; i < adjustedDesiredAmount; i++) {
-            cumulativeProb += calculateBinomialProbability(
-                pulls,
-                i,
-                gashaProb
-            );
+            cumulativeProb += calculateBinomialProbability(pulls, i, gashaProb);
         }
 
         const probability = 1 - cumulativeProb;
-        const roundedProb = mathUtils.roundToDecimalPlaces(
-            probability * 100,
-            2
-        );
+        const roundedProb = mathUtils.roundToDecimalPlaces(probability * 100, 2);
 
         return ok(roundedProb as Percentage);
     } catch (error) {
@@ -160,10 +134,7 @@ export const calculateProbabilityAtLeastN = (
     }
 };
 
-export const calculatePullsFromStones = (
-    stones: Stone,
-    stonePerPull: Stone
-): Result<Count> => {
+export const calculatePullsFromStones = (stones: Stone, stonePerPull: Stone): Result<Count> => {
     if (stonePerPull === 0) {
         return err("ガシャ1回に必要な石の数が0です");
     }

@@ -1,4 +1,4 @@
-import { Result, Stone, Rate, Count, ok, err } from "../types/common";
+import { type Count, err, ok, type Rate, type Result, type Stone } from "../types/common";
 
 const VALIDATION_CONFIG = {
     MAX_STONES: 999999,
@@ -13,8 +13,7 @@ const ERROR_MESSAGES = {
     INVALID_NUMBER: (field: string) => `${field}は有効な数値を入力してください`,
     NEGATIVE: (field: string) => `${field}は0以上の値を入力してください`,
     ZERO: (field: string) => `${field}は0より大きい値を入力してください`,
-    MAX_EXCEEDED: (field: string, max: number) =>
-        `${field}は${max}以下の値を入力してください`,
+    MAX_EXCEEDED: (field: string, max: number) => `${field}は${max}以下の値を入力してください`,
     RATE_RANGE: () =>
         `排出率は${VALIDATION_CONFIG.MIN_RATE}%〜${VALIDATION_CONFIG.MAX_RATE}%の範囲で入力してください`,
 } as const;
@@ -49,9 +48,7 @@ export const validateStones = (value: string): Result<Stone> => {
     if (!result.ok) return result;
 
     if (result.value > VALIDATION_CONFIG.MAX_STONES) {
-        return err(
-            ERROR_MESSAGES.MAX_EXCEEDED("石の数", VALIDATION_CONFIG.MAX_STONES)
-        );
+        return err(ERROR_MESSAGES.MAX_EXCEEDED("石の数", VALIDATION_CONFIG.MAX_STONES));
     }
 
     return ok(result.value as Stone);
@@ -63,10 +60,7 @@ export const validateStonePerPull = (value: string): Result<Stone> => {
 
     if (result.value > VALIDATION_CONFIG.MAX_STONES) {
         return err(
-            ERROR_MESSAGES.MAX_EXCEEDED(
-                "ガシャ1回に必要な石",
-                VALIDATION_CONFIG.MAX_STONES
-            )
+            ERROR_MESSAGES.MAX_EXCEEDED("ガシャ1回に必要な石", VALIDATION_CONFIG.MAX_STONES)
         );
     }
 
@@ -79,10 +73,7 @@ export const validatePullRate = (value: string): Result<Rate> => {
     const result = validatePositiveNumber(value, "排出率");
     if (!result.ok) return result;
 
-    if (
-        result.value < VALIDATION_CONFIG.MIN_RATE ||
-        result.value > VALIDATION_CONFIG.MAX_RATE
-    ) {
+    if (result.value < VALIDATION_CONFIG.MIN_RATE || result.value > VALIDATION_CONFIG.MAX_RATE) {
         return err(ERROR_MESSAGES.RATE_RANGE());
     }
 
@@ -96,9 +87,7 @@ export const validateDesiredAmount = (value: string): Result<Count> => {
     if (!result.ok) return result;
 
     if (result.value > VALIDATION_CONFIG.MAX_COUNT) {
-        return err(
-            ERROR_MESSAGES.MAX_EXCEEDED("希望個数", VALIDATION_CONFIG.MAX_COUNT)
-        );
+        return err(ERROR_MESSAGES.MAX_EXCEEDED("希望個数", VALIDATION_CONFIG.MAX_COUNT));
     }
 
     return ok(result.value as Count);
@@ -109,12 +98,7 @@ export const validatePulls = (value: string): Result<Count> => {
     if (!result.ok) return result;
 
     if (result.value > VALIDATION_CONFIG.MAX_PULLS) {
-        return err(
-            ERROR_MESSAGES.MAX_EXCEEDED(
-                "ガシャ回数",
-                VALIDATION_CONFIG.MAX_PULLS
-            )
-        );
+        return err(ERROR_MESSAGES.MAX_EXCEEDED("ガシャ回数", VALIDATION_CONFIG.MAX_PULLS));
     }
 
     return ok(result.value as Count);
@@ -127,12 +111,7 @@ export const validatePityItems = (value: string): Result<Count> => {
     if (!result.ok) return result;
 
     if (result.value > VALIDATION_CONFIG.MAX_COUNT) {
-        return err(
-            ERROR_MESSAGES.MAX_EXCEEDED(
-                "天井アイテム数",
-                VALIDATION_CONFIG.MAX_COUNT
-            )
-        );
+        return err(ERROR_MESSAGES.MAX_EXCEEDED("天井アイテム数", VALIDATION_CONFIG.MAX_COUNT));
     }
 
     return ok(result.value as Count);
@@ -144,10 +123,7 @@ export const validateRequiredPityItems = (value: string): Result<Count> => {
 
     if (result.value > VALIDATION_CONFIG.MAX_COUNT) {
         return err(
-            ERROR_MESSAGES.MAX_EXCEEDED(
-                "交換に必要な天井アイテム数",
-                VALIDATION_CONFIG.MAX_COUNT
-            )
+            ERROR_MESSAGES.MAX_EXCEEDED("交換に必要な天井アイテム数", VALIDATION_CONFIG.MAX_COUNT)
         );
     }
 
@@ -160,10 +136,7 @@ export const validateCurrentPityItems = (value: string): Result<Count> => {
 
     if (result.value > VALIDATION_CONFIG.MAX_COUNT) {
         return err(
-            ERROR_MESSAGES.MAX_EXCEEDED(
-                "現在の天井アイテム数",
-                VALIDATION_CONFIG.MAX_COUNT
-            )
+            ERROR_MESSAGES.MAX_EXCEEDED("現在の天井アイテム数", VALIDATION_CONFIG.MAX_COUNT)
         );
     }
 

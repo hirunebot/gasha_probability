@@ -1,17 +1,17 @@
 import { atom } from "jotai";
-import { CalculationMode, Stone, Rate, Count } from "../types/common";
-import { InputState, ValidatedInput, CalculationResult } from "../types/gasha";
 import { calculateGashaProbability } from "../domains/GashaCalculation";
 import { validationErrorsAtom } from "../hooks/useValidation";
+import type { CalculationMode, Count, Rate, Stone } from "../types/common";
+import type { CalculationResult, InputState, ValidatedInput } from "../types/gasha";
 import {
-    validateStones,
-    validateStonePerPull,
-    validatePullRate,
-    validateDesiredAmount,
-    validatePulls,
-    validatePityItems,
-    validateRequiredPityItems,
     validateCurrentPityItems,
+    validateDesiredAmount,
+    validatePityItems,
+    validatePullRate,
+    validatePulls,
+    validateRequiredPityItems,
+    validateStonePerPull,
+    validateStones,
 } from "../utils/validation";
 
 export const inputStateAtom = atom<InputState>({
@@ -119,18 +119,11 @@ export const validatedInputAtom = atom((get) => {
     const inputState = get(inputStateAtom);
 
     const stonesResult = validateStones(inputState.stones);
-    const stonePerPullResult = validateStonePerPull(
-        inputState.stonePerPull
-    );
+    const stonePerPullResult = validateStonePerPull(inputState.stonePerPull);
     const pullRateResult = validatePullRate(inputState.pullRate);
     const desiredAmountResult = validateDesiredAmount(inputState.desiredAmount);
 
-    const results = [
-        stonesResult,
-        stonePerPullResult,
-        pullRateResult,
-        desiredAmountResult,
-    ];
+    const results = [stonesResult, stonePerPullResult, pullRateResult, desiredAmountResult];
 
     let pullsResult;
     if (inputState.calculationMode === "pullBase") {
@@ -143,12 +136,8 @@ export const validatedInputAtom = atom((get) => {
     let currentPityItemsResult;
     if (inputState.isPityEnabled) {
         pityItemsResult = validatePityItems(inputState.pityItemsPerPull);
-        requiredPityItemsResult = validateRequiredPityItems(
-            inputState.pityRequiredItems
-        );
-        currentPityItemsResult = validateCurrentPityItems(
-            inputState.currentPityItems
-        );
+        requiredPityItemsResult = validateRequiredPityItems(inputState.pityRequiredItems);
+        currentPityItemsResult = validateCurrentPityItems(inputState.currentPityItems);
         results.push(pityItemsResult, requiredPityItemsResult, currentPityItemsResult);
     }
 
@@ -159,13 +148,9 @@ export const validatedInputAtom = atom((get) => {
 
     const validatedInput: ValidatedInput = {
         stones: stonesResult.ok ? stonesResult.value : (0 as Stone),
-        stonePerPull: stonePerPullResult.ok
-            ? stonePerPullResult.value
-            : (0 as Stone),
+        stonePerPull: stonePerPullResult.ok ? stonePerPullResult.value : (0 as Stone),
         pullRate: pullRateResult.ok ? pullRateResult.value : (0 as Rate),
-        desiredAmount: desiredAmountResult.ok
-            ? desiredAmountResult.value
-            : (0 as Count),
+        desiredAmount: desiredAmountResult.ok ? desiredAmountResult.value : (0 as Count),
         calculationMode: inputState.calculationMode,
     };
 
@@ -196,9 +181,7 @@ export const calculationResultAtom = atom((get) => {
         return validatedInputResult;
     }
 
-    return calculateGashaProbability(
-        validatedInputResult.value as ValidatedInput
-    );
+    return calculateGashaProbability(validatedInputResult.value as ValidatedInput);
 });
 
 export const pullsNumAtom = atom((get) => {

@@ -1,5 +1,5 @@
-import React from "react";
 import { Button } from "@mui/material";
+import type React from "react";
 
 export interface PageHeaderProps {
     title: string;
@@ -33,8 +33,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
                                     backgroundColor: "rgba(255, 255, 255, 0.2)",
                                     color: "white",
                                     "&:hover": {
-                                        backgroundColor:
-                                            "rgba(255, 255, 255, 0.3)",
+                                        backgroundColor: "rgba(255, 255, 255, 0.3)",
                                     },
                                 }}
                             >
@@ -53,8 +52,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
                                     backgroundColor: "rgba(255, 255, 255, 0.2)",
                                     color: "white",
                                     "&:hover": {
-                                        backgroundColor:
-                                            "rgba(255, 255, 255, 0.3)",
+                                        backgroundColor: "rgba(255, 255, 255, 0.3)",
                                     },
                                     minWidth: "auto",
                                     padding: "6px 8px",

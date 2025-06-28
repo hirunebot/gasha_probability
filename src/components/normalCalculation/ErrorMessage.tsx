@@ -1,5 +1,5 @@
-import React from "react";
 import { Alert, AlertTitle } from "@mui/material";
+import type React from "react";
 
 interface ErrorMessageProps {
     error: string;
@@ -31,11 +31,7 @@ export const FieldError: React.FC<FieldErrorProps> = ({ error, fieldName }) => {
     if (!error) return null;
 
     return (
-        <div
-            className="text-red-600 text-sm mt-1"
-            role="alert"
-            aria-label={`${fieldName}のエラー`}
-        >
+        <div className="text-red-600 text-sm mt-1" role="alert" aria-label={`${fieldName}のエラー`}>
             {error}
         </div>
     );

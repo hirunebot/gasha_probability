@@ -1,7 +1,5 @@
 // 共通型定義
-export type Result<T, E = string> =
-    | { ok: true; value: T }
-    | { ok: false; error: E };
+export type Result<T, E = string> = { ok: true; value: T } | { ok: false; error: E };
 
 // ブランデッド型
 export type Branded<T, B> = T & { readonly _brand: B };
@@ -20,10 +18,6 @@ export const err = <E = string>(error: E): Result<never, E> => ({
 });
 
 // 型ガード
-export const isOk = <T, E>(
-    result: Result<T, E>
-): result is { ok: true; value: T } => result.ok;
+export const isOk = <T, E>(result: Result<T, E>): result is { ok: true; value: T } => result.ok;
 
-export const isErr = <T, E>(
-    result: Result<T, E>
-): result is { ok: false; error: E } => !result.ok;
+export const isErr = <T, E>(result: Result<T, E>): result is { ok: false; error: E } => !result.ok;

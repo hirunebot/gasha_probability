@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 
 const SectionHeader: React.FC<{ number: number; title: string }> = ({ number, title }) => (
     <h3 className="text-xl font-medium text-slate-700 mb-6 flex items-center">
@@ -9,26 +9,22 @@ const SectionHeader: React.FC<{ number: number; title: string }> = ({ number, ti
     </h3>
 );
 
-const FieldDescription: React.FC<{ title: string; description: string; limit: string }> = ({ title, description, limit }) => (
+const FieldDescription: React.FC<{
+    title: string;
+    description: string;
+    limit: string;
+}> = ({ title, description, limit }) => (
     <div className="bg-gray-50 rounded-lg p-4">
-        <h4 className="font-medium text-slate-700 mb-2">
-            {title}
-        </h4>
-        <p className="text-slate-600 text-sm mb-2">
-            {description}
-        </p>
-        <p className="text-xs text-slate-500">
-            {limit}
-        </p>
+        <h4 className="font-medium text-slate-700 mb-2">{title}</h4>
+        <p className="text-slate-600 text-sm mb-2">{description}</p>
+        <p className="text-xs text-slate-500">{limit}</p>
     </div>
 );
 
 export const InputFieldsSection: React.FC = () => {
     return (
         <div className="bg-white rounded-xl shadow-sm border border-blue-100 mb-5 p-6">
-            <h2 className="text-xl font-light text-slate-700 mb-6">
-                入力項目の説明
-            </h2>
+            <h2 className="text-xl font-light text-slate-700 mb-6">入力項目の説明</h2>
 
             <div className="mb-8">
                 <SectionHeader number={1} title="基本設定" />
