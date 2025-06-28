@@ -1,7 +1,7 @@
 import { Box, Stack } from "@mui/material";
 import { ValidatedNumberField } from "./ValidatedNumberField";
 import { useAtom } from "jotai";
-import { desiredAmountAtom, isPityConsideredAtom, pityItemsFromPullAtom, requiredPityItemsAtom, currentPityItemsAtom, stoneForPullAtom, stonesAtom, pullRateAtom } from "../stores/atoms";
+import { desiredAmountAtom, isPityConsideredAtom, pityItemsFromPullAtom, requiredPityItemsAtom, currentPityItemsAtom, stoneForPullAtom, stonesAtom, pullRateAtom } from "../../stores/atoms";
 
 
 export interface StoneBaseFormPresenterProps {

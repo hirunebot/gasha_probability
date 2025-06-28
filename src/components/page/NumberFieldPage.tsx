@@ -11,9 +11,7 @@ import {
     Stack,
 } from "@mui/material";
 import { Help } from "@mui/icons-material";
-import { CalculationResult } from "../CalculationResult";
-import { StoneBaseForm } from "../StoneBaseForm";
-import { PullBaseForm } from "../PullBaseForm";
+import { CalculationResult, StoneBaseForm, PullBaseForm } from "../normalCalculation";
 import { HelpPage } from "./HelpPage";
 import { PageHeader } from "../PageHeader";
 import { useAtom } from "jotai";

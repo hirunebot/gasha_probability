@@ -1,7 +1,7 @@
 import { Box, Stack } from '@mui/material';
 import { useAtom } from 'jotai';
 import React from 'react';
-import { calculationModeAtom, desiredAmountNumAtom, hitsFromPityAtom, isPityConsideredAtom, pityItemsAtom, probAtLeastNAtom, probJustNAtom, pullsNumAtom } from '../stores/atoms';
+import { calculationModeAtom, desiredAmountNumAtom, hitsFromPityAtom, isPityConsideredAtom, pityItemsAtom, probAtLeastNAtom, probJustNAtom, pullsNumAtom } from '../../stores/atoms';
 
 export interface CalculationResultPresenterProps {
     children: React.ReactNode;

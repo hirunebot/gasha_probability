@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { TextField, InputAdornment } from "@mui/material";
-import { useValidation } from "../hooks/useValidation";
+import { useValidation } from "../../hooks/useValidation";
 import { FieldError } from "./ErrorMessage";
 
 interface ValidatedNumberFieldProps {
